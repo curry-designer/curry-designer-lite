@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
@@ -10,13 +10,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomePageState extends State<Home> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  var curryList = [
+    'バターチキンカレー',
+    'カシューナッツのチーズカレー',
+    'ほうれん草のカレー',
+    'マトンカレー',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -24,39 +23,90 @@ class _HomePageState extends State<Home> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: Column(
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.fromLTRB(10, 17, 10, 1),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "レシピ一覧",
+                  style: TextStyle(fontSize: 40.0),
+                ),
+              )),
+          new Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemBuilder: (context, i) {
+                final item = curryList[i];
+                return Slidable(
+                  key: Key(item),
+                  actionPane: SlidableDrawerActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: Container(
+                    color: Colors.white,
+                    child: Card(
+                        child: ListTile(
+                      leading: Icon(
+                        IconData(0xe800, fontFamily: 'Curry'),
+                        color: Color.fromRGBO(105, 105, 105, 1.0),
+                        size: 40,
+                      ),
+                      title: Text(
+                        item,
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      subtitle: Text("version: 50"),
+                    )),
+                  ),
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                      caption: 'Delete',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: () => _showDialog(i),
+                    ),
+                  ],
+                );
+              },
+              itemCount: curryList.length,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            title: Text('ヒストリ'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            title: Text('材料'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            title: Text('手順'),
-          ),
+          )
         ],
-//        currentIndex: _selectedIndex,
-//        selectedItemColor: Colors.amber[800],
-//        onTap: _onItemTapped,
       ),
-    );
+      floatingActionButton: FloatingActionButton(
+//    onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
+    ); // This tra
   }
+
+  void _showDialog(int i) => {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text('削除'),
+                content: Text('このレシピを削除してもよろしいでしょうか？'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("CANCEL"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  FlatButton(
+                    child: Text("OK"),
+                    onPressed: () => _deleteRecipe(i),
+                  ),
+                ],
+              );
+            })
+      };
+
+  void _deleteRecipe(int i) => {
+        setState(() {
+          curryList.removeAt(i);
+          Navigator.pop(context);
+        })
+      };
 }

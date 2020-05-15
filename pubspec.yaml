@@ -74,3 +74,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  fonts:
+    - family: Material
+      fonts:
+        - asset: assets/fonts/Material.ttf
+    - family: Knife
+      fonts:
+        - asset: assets/fonts/Knife.ttf

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import './home.dart';
+import 'ui/home.dart';
+import 'ui/register_recipe_form.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,12 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.amberAccent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Home(title: 'Curry Designer Lite'),
+      // MaterialApp contains our top-level Navigator
+      initialRoute: '/',
+      routes: {
+        '/': (BuildContext context) => Home(title: 'Curry Designer Lite'),
+        '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
+      },
     );
   }
 }

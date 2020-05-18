@@ -57,19 +57,26 @@ class ShowCurryItemList extends StatelessWidget {
             actionExtentRatio: 0.25,
             child: Container(
               color: Colors.white,
-              child: Card(
-                  child: ListTile(
-                leading: Icon(
-                  IconData(0xe800, fontFamily: 'Curry'),
-                  color: Color.fromRGBO(105, 105, 105, 1.0),
-                  size: 40,
-                ),
-                title: Text(
-                  item.getName,
-                  style: TextStyle(fontSize: 20.0),
-                ),
-                subtitle: Text("version: " + item.latestVersion.toString()),
-              )),
+              child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/version-management',
+                        arguments: item.getName);
+                  },
+                  child: Card(
+                    child: ListTile(
+                      leading: Icon(
+                        IconData(0xe800, fontFamily: 'Curry'),
+                        color: Color.fromRGBO(105, 105, 105, 1.0),
+                        size: 40,
+                      ),
+                      title: Text(
+                        item.getName,
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      subtitle:
+                          Text("version: " + item.latestVersion.toString()),
+                    ),
+                  )),
             ),
             secondaryActions: <Widget>[
               IconSlideAction(

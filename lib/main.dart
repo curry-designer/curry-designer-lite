@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'ui/home.dart';
 import 'ui/register_recipe_form.dart';
-import './models/curry_item.dart';
+import 'ui/version_management.dart';
 import 'package:provider/provider.dart';
 import './blocs/curry_item_list_bloc.dart';
-import './models/curry_item_action_enum.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,6 +28,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
           '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
+          '/version-management': (BuildContext context) => VersionManagement(),
         },
       ),
     );

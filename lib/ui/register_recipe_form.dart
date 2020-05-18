@@ -61,7 +61,6 @@ class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
         CurryItemEvent(
             CurryItem(_recipeName, 1, CurryItemActionEnum.create), null),
       );
-//      Scaffold.of(context).showSnackBar(SnackBar(content: Text('レシピを登録しました。')));
       Navigator.pop(context);
     }
   }

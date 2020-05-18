@@ -13,55 +13,45 @@ class RegisterRecipeForm extends StatefulWidget {
 }
 
 class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
-  final _bloc = CurryItemListBloc();
   final _formKey = GlobalKey<FormState>();
   String _recipeName = '';
 
   @override
   Widget build(BuildContext context) {
-    return Provider<CurryItemListBloc>.value(
-        value: _bloc,
-        child: Scaffold(
-            appBar: AppBar(
-              title: Text('レシピの登録'),
-            ),
-            body: Form(
-              key: _formKey,
-              child: Container(
-                  padding: const EdgeInsets.all(50.0),
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        maxLength: 100,
-                        decoration: const InputDecoration(
-                          hintText: 'バターチキンカレー etc...',
-                          labelText: 'レシピ名',
-                        ),
-                        validator: (String value) {
-                          return value.isEmpty ? 'レシピ名を入力してください。' : null;
-                        },
-                        onSaved: (String value) {
-                          this._recipeName = value;
-                        },
-                      ),
-                      Consumer<CurryItemListBloc>(
-                        builder: (_, bloc, child) {
-                          return RaisedButton(
-                            onPressed: () => _register(bloc),
-                            child: Text('登録'),
-                          );
-                        },
-                      ),
-                    ],
-                  )),
-            )) // This tra
-        );
-  }
-
-  @override
-  void dispose() {
-    _bloc.dispose();
-    super.dispose();
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('レシピの登録'),
+        ),
+        body: Form(
+          key: _formKey,
+          child: Container(
+              padding: const EdgeInsets.all(50.0),
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    maxLength: 100,
+                    decoration: const InputDecoration(
+                      hintText: 'バターチキンカレー etc...',
+                      labelText: 'レシピ名',
+                    ),
+                    validator: (String value) {
+                      return value.isEmpty ? 'レシピ名を入力してください。' : null;
+                    },
+                    onSaved: (String value) {
+                      this._recipeName = value;
+                    },
+                  ),
+                  Consumer<CurryItemListBloc>(
+                    builder: (_, bloc, child) {
+                      return RaisedButton(
+                        onPressed: () => _register(bloc),
+                        child: Text('登録'),
+                      );
+                    },
+                  ),
+                ],
+              )),
+        )); // This tra
   }
 
   void _register(bloc) {

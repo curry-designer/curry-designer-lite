@@ -5,52 +5,36 @@ import 'package:provider/provider.dart';
 import '../blocs/curry_item_list_bloc.dart';
 import '../models/curry_item_action_enum.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
   Home({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<Home> {
-  final _bloc = CurryItemListBloc();
-
-  @override
   Widget build(BuildContext context) {
-    return Provider<CurryItemListBloc>.value(
-        value: _bloc,
-        child: Scaffold(
-            appBar: AppBar(
-              title: Text(widget.title),
-            ),
-            body: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "レシピ一覧",
-                        style: TextStyle(fontSize: 20.0),
-                      ),
-                    )),
-                Expanded(
-                  child: ShowCurryItemList(),
-                )
-              ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
-              child: Icon(Icons.add),
-            )) // This tra
-        );
-  }
-
-  @override
-  void dispose() {
-    _bloc.dispose();
-    super.dispose();
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Column(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "レシピ一覧",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                )),
+            Expanded(
+              child: ShowCurryItemList(),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
+          child: Icon(Icons.add),
+        )); // This tra
   }
 }
 

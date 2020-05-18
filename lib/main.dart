@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       // MaterialApp contains our top-level Navigator
       initialRoute: '/',
       routes: {
-        '/': (BuildContext context) => Home(title: 'Curry Designer Lite'),
+        '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
       },
     );

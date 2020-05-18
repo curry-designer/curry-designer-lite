@@ -32,7 +32,7 @@ class _HomePageState extends State<Home> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "レシピ一覧",
-                        style: TextStyle(fontSize: 40.0),
+                        style: TextStyle(fontSize: 20.0),
                       ),
                     )),
                 Expanded(

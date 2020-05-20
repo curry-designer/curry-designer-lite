@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/curry_item.dart';
 import 'package:provider/provider.dart';
-import '../blocs/curry_item_list_bloc.dart';
+import '../blocs/curry_item_bloc.dart';
 import '../models/curry_item_action_enum.dart';
 
 class Home extends StatelessWidget {
@@ -41,16 +41,17 @@ class Home extends StatelessWidget {
 class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<CurryItemListBloc>(context);
-
+    final bloc = Provider.of<CurryItemBloc>(context);
     return StreamBuilder<List<CurryItem>>(
       stream: bloc.getCurryItemList,
-      initialData: [],
-      builder: (context, snapshot) => ListView.builder(
+      builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) =>
+          ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
           final item = snapshot.data[i];
-          print(item);
           return Slidable(
             key: Key(item.getName),
             actionPane: SlidableDrawerActionPane(),
@@ -97,7 +98,7 @@ class ShowCurryItemList extends StatelessWidget {
         showDialog(
             context: context,
             builder: (_) {
-              final bloc = Provider.of<CurryItemListBloc>(context);
+              final bloc = Provider.of<CurryItemBloc>(context);
               return AlertDialog(
                 title: Text('削除'),
                 content: Text('このレシピを削除してもよろしいでしょうか？'),
@@ -108,19 +109,15 @@ class ShowCurryItemList extends StatelessWidget {
                   ),
                   FlatButton(
                       child: Text("OK"),
-                      onPressed: () => _deleteRecipe(i, item, context, bloc))
+                      onPressed: () => _deleteRecipe(item, context, bloc))
                 ],
               );
             })
       };
 
-  void _deleteRecipe(int i, CurryItem item, context, bloc) => {
-        bloc.curryItemListListener(
-          CurryItemEvent(
-              CurryItem(item.getName, item.getLatestVersion,
-                  CurryItemActionEnum.delete),
-              i),
-        ),
+  void _deleteRecipe(CurryItem item, context, bloc) => {
+        Provider.of<CurryItemBloc>(context, listen: false)
+            .deleteCurryItem(item.id),
         Navigator.pop(context)
       };
 }

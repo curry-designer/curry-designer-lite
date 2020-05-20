@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../blocs/curry_item_list_bloc.dart';
+import '../blocs/curry_item_bloc.dart';
 import '../models/curry_item.dart';
 
 class VersionManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context).settings.arguments;
-    final bloc = Provider.of<CurryItemListBloc>(context);
+    final bloc = Provider.of<CurryItemBloc>(context);
     return StreamBuilder<List<CurryItem>>(
         stream: bloc.getCurryItemList,
         initialData: [],

@@ -3,7 +3,7 @@ import 'ui/home.dart';
 import 'ui/register_recipe_form.dart';
 import 'ui/version_management.dart';
 import 'package:provider/provider.dart';
-import './blocs/curry_item_list_bloc.dart';
+import './blocs/curry_item_bloc.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,8 +13,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Provider<CurryItemListBloc>(
-      create: (_) => CurryItemListBloc(),
+    return Provider<CurryItemBloc>(
+      create: (_) => CurryItemBloc(),
       dispose: (_, bloc) => bloc.dispose(),
       child: MaterialApp(
         title: 'Flutter Demo',

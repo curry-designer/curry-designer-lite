@@ -3,7 +3,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/curry_item.dart';
 import 'package:provider/provider.dart';
 import '../blocs/curry_item_bloc.dart';
-import '../models/curry_item_action_enum.dart';
 
 class Home extends StatelessWidget {
   Home({Key key, this.title}) : super(key: key);
@@ -43,55 +42,55 @@ class ShowCurryItemList extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = Provider.of<CurryItemBloc>(context);
     return StreamBuilder<List<CurryItem>>(
-      stream: bloc.getCurryItemList,
-      builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) =>
-          ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
+        stream: bloc.getCurryItemList,
+        builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
-          final item = snapshot.data[i];
-          return Slidable(
-            key: Key(item.getName),
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            child: Container(
-              color: Colors.white,
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/version-management',
-                        arguments: item.getName);
-                  },
-                  child: Card(
-                    child: ListTile(
-                      leading: Icon(
-                        IconData(0xe800, fontFamily: 'Curry'),
-                        color: Color.fromRGBO(105, 105, 105, 1.0),
-                        size: 40,
-                      ),
-                      title: Text(
-                        item.getName,
-                        style: TextStyle(fontSize: 20.0),
-                      ),
-                      subtitle:
-                          Text("version: " + item.latestVersion.toString()),
-                    ),
-                  )),
-            ),
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: 'Delete',
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () => _showDialog(i, snapshot.data[i], context),
-              ),
-            ],
+          return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemBuilder: (context, i) {
+              final item = snapshot.data[i];
+              return Slidable(
+                key: Key(item.getName),
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: Container(
+                  color: Colors.white,
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/version-management',
+                            arguments: item.getName);
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: Icon(
+                            IconData(0xe800, fontFamily: 'Curry'),
+                            color: Color.fromRGBO(105, 105, 105, 1.0),
+                            size: 40,
+                          ),
+                          title: Text(
+                            item.getName,
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          subtitle:
+                              Text("version: " + item.latestVersion.toString()),
+                        ),
+                      )),
+                ),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () => _showDialog(i, snapshot.data[i], context),
+                  ),
+                ],
+              );
+            },
+            itemCount: snapshot.data.length,
           );
-        },
-        itemCount: snapshot.data.length,
-      ),
-    );
+        });
   }
 
   void _showDialog(int i, CurryItem item, context) => {

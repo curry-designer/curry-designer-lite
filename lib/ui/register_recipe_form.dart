@@ -19,6 +19,7 @@ class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<CurryItemBloc>(context);
+    bloc.fetchCurryItems();
     return Scaffold(
         appBar: AppBar(
           title: Text('レシピの登録'),

@@ -16,7 +16,7 @@ class _TextWidgetState extends State<TextWidget>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('材料'),
       ),
 
       body: ListView(
@@ -24,10 +24,10 @@ class _TextWidgetState extends State<TextWidget>{
           TextField(
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              hintText: 'Write something',
+              hintText: '材料をメモ',
             ),
 
-            maxLines: null,
+            maxLines: 20,
           ),
         ],
       )

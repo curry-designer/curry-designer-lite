@@ -23,6 +23,8 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.amber,
           accentColor: Colors.amberAccent,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'Cursive',//TODO:Fontどうするか決めたい
+          
         ),
         // MaterialApp contains our top-level Navigator
         initialRoute: '/',

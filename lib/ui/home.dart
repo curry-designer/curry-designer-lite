@@ -73,8 +73,10 @@ class ShowCurryItemList extends StatelessWidget {
                             item.getName,
                             style: TextStyle(fontSize: 20.0),
                           ),
-                          subtitle:
-                              Text("version: " + item.latestVersion.toString()),
+                          subtitle: Text("latest update: " +
+                              item.latestVersion.toString() +
+                              "      ★" +
+                              item.starCount.toString()),
                         ),
                       )),
                 ),
@@ -100,7 +102,7 @@ class ShowCurryItemList extends StatelessWidget {
               final bloc = Provider.of<CurryItemBloc>(context);
               return AlertDialog(
                 title: Text('削除'),
-                content: Text('このレシピを削除してもよろしいでしょうか？'),
+                content: Text('このレシピを削除してもよろしいですか？'),
                 actions: <Widget>[
                   FlatButton(
                     child: Text("CANCEL"),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/curry_item.dart';
 import '../blocs/curry_item_bloc.dart';
-import '../models/curry_item_action_enum.dart';
+import 'package:intl/intl.dart';
 
 class RegisterRecipeForm extends StatefulWidget {
   RegisterRecipeForm({Key key, this.title}) : super(key: key);
@@ -28,7 +28,6 @@ class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
             key: _formKey,
             child: StreamBuilder<List<CurryItem>>(
                 stream: bloc.getCurryItemList,
-//                initialData: [],
                 builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) {
                   if (!snapshot.hasData) {
                     return Center(child: CircularProgressIndicator());
@@ -68,8 +67,13 @@ class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
       int len = length == null ? 1 : length + 1;
-      Provider.of<CurryItemBloc>(context, listen: false).createCurryItem(
-          CurryItem(id: len, name: _recipeName, latestVersion: "1"));
+      Provider.of<CurryItemBloc>(context, listen: false)
+          .createCurryItem(CurryItem(
+        id: len,
+        name: _recipeName,
+        latestVersion: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+        starCount: 4,
+      ));
       Navigator.pop(context);
     }
   }

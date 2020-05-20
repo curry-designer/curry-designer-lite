@@ -8,7 +8,17 @@ class CurryItemDao {
   // Create new curry recipe.
   Future<int> createCurryItem(CurryItem curryItem) async {
     final db = await dbProvider.database;
-    var result = db.insert('CurryItem', curryItem.toDatabaseJson());
+    var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM CurryItem");
+    int id = table.first["id"];
+    var result = db.rawInsert(
+        "INSERT Into CurryItem (id,name,latest_version,star_count)"
+        " VALUES (?,?,?,?)",
+        [
+          id,
+          curryItem.getName,
+          curryItem.getLatestVersion,
+          curryItem.getStarCount
+        ]);
     return result;
   }
 

@@ -30,7 +30,7 @@ class DatabaseProvider {
 
   // Migration scripts.
   final scripts = {
-    '2': ['ALTER TABLE memo ADD COLUMN create_at TIMESTAMP;'],
+//    '2': ['ALTER TABLE memo ADD COLUMN create_at TIMESTAMP;'],
   };
 
   void onUpgrade(Database database, int oldVersion, int newVersion) async {

@@ -4,17 +4,8 @@ import '../models/curry_item.dart';
 import '../blocs/curry_item_bloc.dart';
 import 'package:intl/intl.dart';
 
-class RegisterRecipeForm extends StatefulWidget {
-  RegisterRecipeForm({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _RegisterRecipeFormState createState() => _RegisterRecipeFormState();
-}
-
-class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
+class RegisterRecipeForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  String _recipeName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,43 +25,52 @@ class _RegisterRecipeFormState extends State<RegisterRecipeForm> {
                   }
                   return Container(
                       padding: const EdgeInsets.all(50.0),
-                      child: Column(
-                        children: <Widget>[
-                          TextFormField(
-                            maxLength: 100,
-                            decoration: const InputDecoration(
-                              hintText: 'バターチキンカレー etc...',
-                              labelText: 'レシピ名',
-                            ),
-                            validator: (String value) {
-                              return value.isEmpty ? 'レシピ名を入力してください。' : null;
-                            },
-                            onSaved: (String value) {
-                              this._recipeName = value;
-                            },
-                          ),
-                          Consumer<CurryItemBloc>(
-                            builder: (_, bloc, child) {
-                              return RaisedButton(
-                                onPressed: () =>
-                                    _register(snapshot.data.length),
-                                child: Text('登録'),
-                              );
-                            },
-                          ),
-                        ],
-                      ));
+                      child: StreamBuilder<String>(
+                          stream: bloc.getCurryRecipeName,
+                          initialData: "",
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            return Column(
+                              children: <Widget>[
+                                TextFormField(
+                                  maxLength: 100,
+                                  decoration: const InputDecoration(
+                                    hintText: 'バターチキンカレー etc...',
+                                    labelText: 'レシピ名',
+                                  ),
+                                  validator: (String value) {
+                                    return value.isEmpty
+                                        ? 'レシピ名を入力してください。'
+                                        : null;
+                                  },
+                                  onChanged: (String value) {
+                                    bloc.registerCurryRecipeName(value);
+                                  },
+                                ),
+                                Consumer<CurryItemBloc>(
+                                  builder: (_, bloc, child) {
+                                    return RaisedButton(
+                                      onPressed: () =>
+                                          _register(snapshot.data, context),
+                                      child: Text('登録'),
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          }));
                 }))); // This tra
   }
 
-  void _register(int length) {
+  void _register(String data, context) {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
-      int len = length == null ? 1 : length + 1;
       Provider.of<CurryItemBloc>(context, listen: false)
           .createCurryItem(CurryItem(
-        id: len,
-        name: _recipeName,
+        id: null,
+        name: data,
         latestVersion: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
         starCount: 4,
       ));

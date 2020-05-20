@@ -8,11 +8,14 @@ class CurryItemBloc {
   final _curryItemRepository = CurryItemRepository();
 
   // Stream.
-  final _outputCurryItemListController = PublishSubject<List<CurryItem>>();
+  final _curryItemListController = PublishSubject<List<CurryItem>>();
+  final _curryRecipeNameController = PublishSubject<String>();
 
   // Getter of stream.
   Stream<List<CurryItem>> get getCurryItemList =>
-      _outputCurryItemListController.stream;
+      _curryItemListController.stream;
+
+  Stream<String> get getCurryRecipeName => _curryRecipeNameController.stream;
 
   // Constructor.
   CurryItemBloc() {
@@ -21,7 +24,7 @@ class CurryItemBloc {
 
   // Fetch all curry recipes.
   void fetchCurryItems({String query}) async {
-    _outputCurryItemListController
+    _curryItemListController
         .add(await _curryItemRepository.fetchCurryItems(query: query));
   }
 
@@ -37,7 +40,13 @@ class CurryItemBloc {
     fetchCurryItems();
   }
 
+  // Register curry recipe name.
+  void registerCurryRecipeName(String name) {
+    _curryRecipeNameController.add(name);
+  }
+
   void dispose() {
-    _outputCurryItemListController.close();
+    _curryItemListController.close();
+    _curryRecipeNameController.close();
   }
 }

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/curry_item.dart';
 import 'package:provider/provider.dart';
-import '../blocs/curry_item_list_bloc.dart';
-import '../models/curry_item_action_enum.dart';
+import '../blocs/curry_item_bloc.dart';
 
 class Home extends StatelessWidget {
   Home({Key key, this.title}) : super(key: key);
@@ -41,66 +40,69 @@ class Home extends StatelessWidget {
 class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<CurryItemListBloc>(context);
-
+    final bloc = Provider.of<CurryItemBloc>(context);
     return StreamBuilder<List<CurryItem>>(
-      stream: bloc.getCurryItemList,
-      initialData: [],
-      builder: (context, snapshot) => ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          final item = snapshot.data[i];
-          print(item);
-          return Slidable(
-            key: Key(item.getName),
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            child: Container(
-              color: Colors.white,
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/version-management',
-                        arguments: item.getName);
-                  },
-                  child: Card(
-                    child: ListTile(
-                      leading: Icon(
-                        IconData(0xe800, fontFamily: 'Curry'),
-                        color: Color.fromRGBO(105, 105, 105, 1.0),
-                        size: 40,
-                      ),
-                      title: Text(
-                        item.getName,
-                        style: TextStyle(fontSize: 20.0),
-                      ),
-                      subtitle:
-                          Text("version: " + item.latestVersion.toString()),
-                    ),
-                  )),
-            ),
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: 'Delete',
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () => _showDialog(i, snapshot.data[i], context),
-              ),
-            ],
+        stream: bloc.getCurryItemList,
+        builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemBuilder: (context, i) {
+              final item = snapshot.data[i];
+              return Slidable(
+                key: Key(item.getName),
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: Container(
+                  color: Colors.white,
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/version-management',
+                            arguments: item.getName);
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: Icon(
+                            IconData(0xe800, fontFamily: 'Curry'),
+                            color: Color.fromRGBO(105, 105, 105, 1.0),
+                            size: 40,
+                          ),
+                          title: Text(
+                            item.getName,
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          subtitle: Text("latest update: " +
+                              item.latestVersion.toString() +
+                              "      ★" +
+                              item.starCount.toString()),
+                        ),
+                      )),
+                ),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () => _showDialog(i, snapshot.data[i], context),
+                  ),
+                ],
+              );
+            },
+            itemCount: snapshot.data.length,
           );
-        },
-        itemCount: snapshot.data.length,
-      ),
-    );
+        });
   }
 
   void _showDialog(int i, CurryItem item, context) => {
         showDialog(
             context: context,
             builder: (_) {
-              final bloc = Provider.of<CurryItemListBloc>(context);
+              final bloc = Provider.of<CurryItemBloc>(context);
               return AlertDialog(
                 title: Text('削除'),
-                content: Text('このレシピを削除してもよろしいでしょうか？'),
+                content: Text('このレシピを削除してもよろしいですか？'),
                 actions: <Widget>[
                   FlatButton(
                     child: Text("CANCEL"),
@@ -108,19 +110,15 @@ class ShowCurryItemList extends StatelessWidget {
                   ),
                   FlatButton(
                       child: Text("OK"),
-                      onPressed: () => _deleteRecipe(i, item, context, bloc))
+                      onPressed: () => _deleteRecipe(item, context, bloc))
                 ],
               );
             })
       };
 
-  void _deleteRecipe(int i, CurryItem item, context, bloc) => {
-        bloc.curryItemListListener(
-          CurryItemEvent(
-              CurryItem(item.getName, item.getLatestVersion,
-                  CurryItemActionEnum.delete),
-              i),
-        ),
+  void _deleteRecipe(CurryItem item, context, bloc) => {
+        Provider.of<CurryItemBloc>(context, listen: false)
+            .deleteCurryItem(item.id),
         Navigator.pop(context)
       };
 }

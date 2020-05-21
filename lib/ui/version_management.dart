@@ -75,7 +75,9 @@ class VersionManagement extends StatelessWidget {
               ],
 //        currentIndex: _selectedIndex,
 //        selectedItemColor: Colors.amber[800],
-//        onTap: _onItemTapped,
+              onTap: (int index){
+                Navigator.pushNamed(context, '/material-note');
+              },
             ),
           );
         });

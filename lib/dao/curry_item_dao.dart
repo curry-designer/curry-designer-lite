@@ -11,12 +11,12 @@ class CurryItemDao {
     var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM CurryItem");
     int id = table.first["id"];
     var result = db.rawInsert(
-        "INSERT Into CurryItem (id,name,latest_version,star_count)"
+        "INSERT Into CurryItem (id,name,latest_update_date,star_count)"
         " VALUES (?,?,?,?)",
         [
           id,
           curryItem.getName,
-          curryItem.getLatestVersion,
+          curryItem.getLatestUpdateDate,
           curryItem.getStarCount
         ]);
     return result;

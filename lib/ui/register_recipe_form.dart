@@ -71,7 +71,7 @@ class RegisterRecipeForm extends StatelessWidget {
           .createCurryItem(CurryItem(
         id: null,
         name: data,
-        latestVersion: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+        latestUpdateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
         starCount: 4,
       ));
       Navigator.pop(context);

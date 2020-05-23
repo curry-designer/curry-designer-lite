@@ -24,13 +24,13 @@ class DatabaseProvider {
     //"ReactiveTodo.db is our database instance name
     String path = join(documentsDirectory.path, "CurryNoteLite.db");
     var database = await openDatabase(path,
-        version: 2, onCreate: initDB, onUpgrade: onUpgrade);
+        version: 1, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
   }
 
   // Migration scripts.
   final scripts = {
-    '2': ['ALTER TABLE CurryItem ADD COLUMN star_count INTEGER;'],
+//    '2': ['ALTER TABLE CurryItem ADD COLUMN star_count INTEGER;'],
   };
 
   void onUpgrade(Database database, int oldVersion, int newVersion) async {
@@ -46,7 +46,8 @@ class DatabaseProvider {
     await database.execute("CREATE TABLE CurryItem ("
         "id INTEGER PRIMARY KEY,"
         "name TEXT,"
-        "latest_version TEXT"
+        "latest_update_date TEXT,"
+        "star_count INTEGER"
         ")");
   }
 }

@@ -74,7 +74,7 @@ class ShowCurryItemList extends StatelessWidget {
                             style: TextStyle(fontSize: 20.0),
                           ),
                           subtitle: Text("latest update: " +
-                              item.latestVersion.toString() +
+                              item.latestUpdateDate.toString() +
                               "      ★" +
                               item.starCount.toString()),
                         ),

@@ -1,3 +1,4 @@
+import 'package:currydesignerlite/stores/curry_item_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/curry_item.dart';
@@ -10,39 +11,50 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Column(
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "レシピ一覧",
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                )),
-            Expanded(
-              child: ShowCurryItemList(),
-            )
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
-          child: Icon(Icons.add),
-        )); // This tra
+    return ChangeNotifierProvider<CurryItemStore>(
+      create: (_) => CurryItemStore(),
+      child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+                icon: Icon(
+                  Icons.home,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/");
+                }),
+            title: Text(title),
+          ),
+          body: Column(
+            children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "レシピ一覧",
+                      style: TextStyle(fontSize: 20.0),
+                    ),
+                  )),
+              Expanded(
+                child: ShowCurryItemList(),
+              )
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
+            child: Icon(Icons.add),
+          )),
+    ); // This tra
   }
 }
 
 class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<CurryItemBloc>(context);
-    return StreamBuilder<List<CurryItem>>(
-        stream: bloc.getCurryItemList,
+    final bloc = Provider.of<CurryItemStore>(context);
+    Future<List<CurryItem>> curryItemList = bloc.getCurryItemList;
+    return FutureBuilder<List<CurryItem>>(
+        future: bloc.getCurryItemList,
         builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -99,7 +111,7 @@ class ShowCurryItemList extends StatelessWidget {
         showDialog(
             context: context,
             builder: (_) {
-              final bloc = Provider.of<CurryItemBloc>(context);
+              final bloc = Provider.of<CurryItemStore>(context);
               return AlertDialog(
                 title: Text('削除'),
                 content: Text('このレシピを削除してもよろしいですか？'),
@@ -117,8 +129,8 @@ class ShowCurryItemList extends StatelessWidget {
       };
 
   void _deleteRecipe(CurryItem item, context, bloc) => {
-        Provider.of<CurryItemBloc>(context, listen: false)
+        Provider.of<CurryItemStore>(context, listen: false)
             .deleteCurryItem(item.id),
-        Navigator.pop(context)
+        Navigator.pushNamed(context, "/")
       };
 }

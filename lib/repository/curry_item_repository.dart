@@ -4,7 +4,7 @@ import '../models/curry_item.dart';
 class CurryItemRepository {
   final curryItemDao = CurryItemDao();
 
-  Future fetchCurryItems({String query}) =>
+  Future<List<CurryItem>> fetchCurryItems({String query}) =>
       curryItemDao.fetchCurryItems(query: query);
 
   Future createCurryItem(CurryItem item) => curryItemDao.createCurryItem(item);

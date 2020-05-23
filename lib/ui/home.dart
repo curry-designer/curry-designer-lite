@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/curry_item.dart';
 import 'package:provider/provider.dart';
-import '../blocs/curry_item_bloc.dart';
 
 class Home extends StatelessWidget {
   Home({Key key, this.title}) : super(key: key);

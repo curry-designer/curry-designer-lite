@@ -1,7 +1,6 @@
 import 'package:currydesignerlite/stores/curry_item_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../blocs/curry_item_bloc.dart';
 import '../models/curry_item.dart';
 
 class VersionManagement extends StatelessWidget {

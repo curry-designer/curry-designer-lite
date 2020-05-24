@@ -43,11 +43,17 @@ class DatabaseProvider {
   }
 
   void initDB(Database database, int version) async {
-    await database.execute("CREATE TABLE CurryItem ("
+    await database.execute("CREATE TABLE Recipe ("
         "id INTEGER PRIMARY KEY,"
-        "name TEXT,"
+        "name TEXT"
+        ")");
+    await database.execute("CREATE TABLE Version ("
+        "id INTEGER,"
+        "recipe_id INTEGER,"
         "latest_update_date TEXT,"
-        "star_count INTEGER"
+        "star_count INTEGER,"
+        "comment TEXT,"
+        "PRIMARY KEY (id, recipe_id)"
         ")");
   }
 }

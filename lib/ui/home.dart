@@ -1,7 +1,8 @@
-import 'package:currydesignerlite/stores/curry_item_store.dart';
+import 'package:currydesignerlite/stores/recipe_store.dart';
+import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../models/curry_item.dart';
+import '../models/recipe.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -10,8 +11,15 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CurryItemStore>(
-      create: (_) => CurryItemStore(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RecipeStore>(
+          create: (_) => RecipeStore(),
+        ),
+        ChangeNotifierProvider<VersionStore>(
+          create: (_) => VersionStore(),
+        )
+      ],
       child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -50,11 +58,11 @@ class Home extends StatelessWidget {
 class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<CurryItemStore>(context);
-    Future<List<CurryItem>> curryItemList = bloc.getCurryItemList;
-    return FutureBuilder<List<CurryItem>>(
-        future: bloc.getCurryItemList,
-        builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) {
+    final bloc = Provider.of<RecipeStore>(context);
+    Future<List<Recipe>> curryItemList = bloc.getRecipes;
+    return FutureBuilder<List<Recipe>>(
+        future: bloc.getRecipes,
+        builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
@@ -71,7 +79,7 @@ class ShowCurryItemList extends StatelessWidget {
                   child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, '/version-management',
-                            arguments: item.getName);
+                            arguments: item.id);
                       },
                       child: Card(
                         child: ListTile(
@@ -85,9 +93,7 @@ class ShowCurryItemList extends StatelessWidget {
                             style: TextStyle(fontSize: 20.0),
                           ),
                           subtitle: Text("latest update: " +
-                              item.latestUpdateDate.toString() +
-                              "      ★" +
-                              item.starCount.toString()),
+                              item.latestUpdateDate.toString()),
                         ),
                       )),
                 ),
@@ -106,11 +112,11 @@ class ShowCurryItemList extends StatelessWidget {
         });
   }
 
-  void _showDialog(int i, CurryItem item, context) => {
+  void _showDialog(int i, Recipe item, context) => {
         showDialog(
             context: context,
             builder: (_) {
-              final bloc = Provider.of<CurryItemStore>(context);
+              final bloc = Provider.of<RecipeStore>(context);
               return AlertDialog(
                 title: Text('削除'),
                 content: Text('このレシピを削除してもよろしいですか？'),
@@ -127,9 +133,10 @@ class ShowCurryItemList extends StatelessWidget {
             })
       };
 
-  void _deleteRecipe(CurryItem item, context, bloc) => {
-        Provider.of<CurryItemStore>(context, listen: false)
-            .deleteCurryItem(item.id),
+  void _deleteRecipe(Recipe item, context, bloc) => {
+        Provider.of<RecipeStore>(context, listen: false).deleteRecipe(item.id),
+        Provider.of<VersionStore>(context, listen: false)
+            .deleteVersionByRecipeId(item.id),
         Navigator.pushNamed(context, "/")
       };
 }

@@ -1,12 +1,27 @@
-import 'package:currydesignerlite/stores/curry_item_store.dart';
+import 'package:currydesignerlite/models/version.dart';
+import 'package:currydesignerlite/stores/recipe_store.dart';
+import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/curry_item.dart';
+import '../models/recipe.dart';
 
 class VersionManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(providers: [
+      ChangeNotifierProvider<VersionStore>(
+        create: (_) => VersionStore(),
+      )
+    ], child: _VersionManagement());
+  }
+}
+
+class _VersionManagement extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     final args = ModalRoute.of(context).settings.arguments;
+    final bloc = Provider.of<VersionStore>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -22,10 +37,26 @@ class VersionManagement extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              args,
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            FutureBuilder<List<Version>>(
+                future: bloc.fetchVersions(recipeId: args),
+                builder: (context, AsyncSnapshot<List<Version>> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return DropdownButton(
+                    hint: Text('version: ' + snapshot.data[0].getId.toString()),
+                    value: snapshot.data[0].getId,
+                    items: snapshot.data.map((item) {
+                      return DropdownMenuItem(
+                        child: Text('version: ' + item.getId.toString()),
+                        value: item.getId,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      bloc.setDropdownVersion(value);
+                    },
+                  );
+                })
           ],
         ),
       ),

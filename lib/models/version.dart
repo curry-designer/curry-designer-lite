@@ -1,30 +1,37 @@
-import "./curry_item_action_enum.dart";
-
-class CurryItem {
+class Version {
   final int id;
-  final String name;
+  final int recipeId;
   final String latestUpdateDate;
   final int starCount;
+  final String comment;
 
   // Constructor.
-  CurryItem({this.id, this.name, this.latestUpdateDate, this.starCount});
+  Version(
+      {this.id,
+      this.recipeId,
+      this.latestUpdateDate,
+      this.starCount,
+      this.comment});
 
-  String get getName => name;
+  int get getRecipeId => recipeId;
   String get getLatestUpdateDate => latestUpdateDate;
   int get getId => id;
   int get getStarCount => starCount;
+  String get getComment => comment;
 
-  factory CurryItem.fromDatabaseJson(Map<String, dynamic> data) => CurryItem(
+  factory Version.fromDatabaseJson(Map<String, dynamic> data) => Version(
         id: data['id'],
-        name: data['name'],
+        recipeId: data['recipe_id'],
         latestUpdateDate: data['latest_update_date'],
         starCount: data['star_count'],
+        comment: data['comment'],
       );
 
   Map<String, dynamic> toDatabaseJson() => {
         "id": this.id,
-        "name": this.name,
+        "recipe_id": this.recipeId,
         "latest_update_date": this.latestUpdateDate,
         "star_count": this.starCount,
+        "comment": this.comment,
       };
 }

@@ -8,10 +8,11 @@ class VersionStore with ChangeNotifier {
   final _versionRepository = VersionRepository();
 
   // Initialize version.
-  int _version = 0;
+  int _version = 1;
 
   // Getter method.
   Future<List<Version>> get getAllVersions => fetchVersions();
+  int get getVersion => _version;
 
   // Fetch all curry recipes.
   Future<List<Version>> fetchVersions({int recipeId}) async {
@@ -22,6 +23,7 @@ class VersionStore with ChangeNotifier {
   Future<void> createRecipe(Version item) async {
     await _versionRepository.createVersion(item);
     fetchVersions();
+    notifyListeners();
   }
 
   // Delete version by recipe id.
@@ -33,5 +35,6 @@ class VersionStore with ChangeNotifier {
   // Register curry recipe name.
   void setDropdownVersion(int version) {
     _version = version;
+    notifyListeners();
   }
 }

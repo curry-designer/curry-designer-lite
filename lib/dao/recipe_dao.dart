@@ -32,11 +32,13 @@ class RecipeDao {
       result = await db.rawQuery('SELECT '
           'r.id AS id, '
           'r.name AS name, '
-          'MAX(v.latest_update_date) AS latest_update_date '
+          'MAX(v.latest_update_date) AS latest_update_date, '
+          'v.star_count AS star_count '
           'FROM Recipe r '
           'INNER JOIN Version v '
           'ON r.id = v.recipe_id '
-          'GROUP BY r.id');
+          'GROUP BY r.id '
+          'HAVING MAX(v.id) = v.id');
     }
 
     List<Recipe> recipes = result.isNotEmpty

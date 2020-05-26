@@ -14,10 +14,10 @@ class Home extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<RecipeStore>(
-          create: (_) => RecipeStore(),
+          create: (context) => RecipeStore(),
         ),
         ChangeNotifierProvider<VersionStore>(
-          create: (_) => VersionStore(),
+          create: (context) => VersionStore(),
         )
       ],
       child: Scaffold(
@@ -58,10 +58,8 @@ class Home extends StatelessWidget {
 class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<RecipeStore>(context);
-    Future<List<Recipe>> curryItemList = bloc.getRecipes;
     return FutureBuilder<List<Recipe>>(
-        future: bloc.getRecipes,
+        future: context.select((RecipeStore store) => store.getRecipes),
         builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -93,7 +91,9 @@ class ShowCurryItemList extends StatelessWidget {
                             style: TextStyle(fontSize: 20.0),
                           ),
                           subtitle: Text("latest update: " +
-                              item.latestUpdateDate.toString()),
+                              item.latestUpdateDate.toString() +
+                              "    ★ " +
+                              item.starCount.toString()),
                         ),
                       )),
                 ),
@@ -112,11 +112,10 @@ class ShowCurryItemList extends StatelessWidget {
         });
   }
 
-  void _showDialog(int i, Recipe item, context) => {
+  void _showDialog(int i, Recipe item, BuildContext context) => {
         showDialog(
             context: context,
             builder: (_) {
-              final bloc = Provider.of<RecipeStore>(context);
               return AlertDialog(
                 title: Text('削除'),
                 content: Text('このレシピを削除してもよろしいですか？'),
@@ -127,16 +126,15 @@ class ShowCurryItemList extends StatelessWidget {
                   ),
                   FlatButton(
                       child: Text("OK"),
-                      onPressed: () => _deleteRecipe(item, context, bloc))
+                      onPressed: () => _deleteRecipe(item, context))
                 ],
               );
             })
       };
 
-  void _deleteRecipe(Recipe item, context, bloc) => {
-        Provider.of<RecipeStore>(context, listen: false).deleteRecipe(item.id),
-        Provider.of<VersionStore>(context, listen: false)
-            .deleteVersionByRecipeId(item.id),
-        Navigator.pushNamed(context, "/")
+  void _deleteRecipe(Recipe item, BuildContext context) => {
+        context.read<RecipeStore>().deleteRecipe(item.id),
+        context.read<VersionStore>().deleteVersionByRecipeId(item.id),
+        Navigator.pop(context)
       };
 }

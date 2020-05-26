@@ -10,7 +10,7 @@ class VersionManagement extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider<VersionStore>(
-        create: (_) => VersionStore(),
+        create: (context) => VersionStore(),
       )
     ], child: _VersionManagement());
   }
@@ -20,7 +20,6 @@ class _VersionManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context).settings.arguments;
-    final bloc = Provider.of<VersionStore>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,30 +33,35 @@ class _VersionManagement extends StatelessWidget {
         title: Text('バージョン管理'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FutureBuilder<List<Version>>(
-                future: bloc.fetchVersions(recipeId: args),
-                builder: (context, AsyncSnapshot<List<Version>> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  return DropdownButton(
-                    hint: Text('version: ' + snapshot.data[0].getId.toString()),
-                    value: snapshot.data[0].getId,
-                    items: snapshot.data.map((item) {
-                      return DropdownMenuItem(
-                        child: Text('version: ' + item.getId.toString()),
-                        value: item.getId,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      bloc.setDropdownVersion(value);
-                    },
-                  );
-                })
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FutureBuilder<List<Version>>(
+                  future: context.select((VersionStore store) =>
+                      store.fetchVersions(recipeId: args)),
+                  builder: (context, AsyncSnapshot<List<Version>> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return DropdownButton(
+                      hint:
+                          Text('version: ' + snapshot.data[0].getId.toString()),
+                      value: context
+                          .select((VersionStore store) => store.getVersion),
+                      items: snapshot.data.map((item) {
+                        return DropdownMenuItem(
+                          child: Text('version: ' + item.getId.toString()),
+                          value: item.getId,
+                        );
+                      }).toList(),
+                      onChanged: (value) => context
+                          .read<VersionStore>()
+                          .setDropdownVersion(value),
+                    );
+                  })
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

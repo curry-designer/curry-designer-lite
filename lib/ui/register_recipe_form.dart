@@ -11,10 +11,10 @@ class RegisterRecipeForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider<RecipeStore>(
-        create: (_) => RecipeStore(),
+        create: (context) => RecipeStore(),
       ),
       ChangeNotifierProvider<VersionStore>(
-        create: (_) => VersionStore(),
+        create: (context) => VersionStore(),
       )
     ], child: _RegisterRecipeForm());
   }
@@ -61,21 +61,21 @@ class _RegisterRecipeForm extends StatelessWidget {
     );
   }
 
-  void _register(String data, context) async {
+  void _register(String data, BuildContext context) async {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
-      final bloc = Provider.of<RecipeStore>(context, listen: false);
-      await bloc.createRecipe(Recipe(
-        name: data,
-      ));
-      List<Recipe> recipes = await bloc.fetchLatestRecipesId();
+      await context.read<RecipeStore>().createRecipe(Recipe(
+            name: data,
+          ));
+      List<Recipe> recipes =
+          await context.read<RecipeStore>().fetchLatestRecipesId();
       int recipeId = recipes[0].getId;
-      await Provider.of<VersionStore>(context, listen: false)
-          .createRecipe(Version(
-        recipeId: recipeId,
-        latestUpdateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-        starCount: 0,
-      ));
+      await context.read<VersionStore>().createRecipe(Version(
+            recipeId: recipeId,
+            latestUpdateDate:
+                DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+            starCount: 0,
+          ));
       Navigator.pushNamed(context, "/");
     }
   }

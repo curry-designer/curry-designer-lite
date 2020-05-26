@@ -28,6 +28,7 @@ class RecipeStore with ChangeNotifier {
   Future<int> createRecipe(Recipe item) async {
     int result = await _recipeRepository.createRecipe(item);
     fetchRecipes();
+    notifyListeners();
     return result;
   }
 
@@ -35,6 +36,7 @@ class RecipeStore with ChangeNotifier {
   void deleteRecipe(int id) async {
     await _recipeRepository.deleteRecipe(id);
     fetchRecipes();
+    notifyListeners();
   }
 
   // Register curry recipe name.

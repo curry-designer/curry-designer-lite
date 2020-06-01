@@ -8,11 +8,16 @@ class VersionStore with ChangeNotifier {
   final _versionRepository = VersionRepository();
 
   // Initialize version.
-  int _version = 1;
+  int _version;
+  final Map<int, Version> _map = {};
+  int _starCount;
+  String _comment;
 
   // Getter method.
   Future<List<Version>> get getAllVersions => fetchVersions();
   int get getVersion => _version;
+  Map<int, Version> get getMapVersions => _map;
+  int get getStarCount => _starCount;
 
   // Fetch all curry recipes.
   Future<List<Version>> fetchVersions({int recipeId}) async {
@@ -35,6 +40,31 @@ class VersionStore with ChangeNotifier {
   // Register curry recipe name.
   void setDropdownVersion(int version) {
     _version = version;
+    _starCount = _map[version].getStarCount;
     notifyListeners();
+  }
+
+  void convertVersionListsToMap(List<Version> versions) {
+    versions.forEach((version) => _map[version.getId] = version);
+  }
+
+  void setStarCount(int starCount) {
+    _starCount = starCount;
+    notifyListeners();
+  }
+
+  void updateStarCount(Version item) async {
+    await _versionRepository.updateStarCount(item);
+    fetchVersions();
+  }
+
+  void setComment(String comment) {
+    _comment = comment;
+    notifyListeners();
+  }
+
+  void updateComment(Version item) async {
+    await _versionRepository.updateComment(item);
+    fetchVersions();
   }
 }

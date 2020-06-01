@@ -72,8 +72,7 @@ class _RegisterRecipeForm extends StatelessWidget {
       int recipeId = recipes[0].getId;
       await context.read<VersionStore>().createRecipe(Version(
             recipeId: recipeId,
-            latestUpdateDate:
-                DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+            updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
             starCount: 0,
           ));
       Navigator.pushNamed(context, "/");

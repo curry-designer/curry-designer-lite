@@ -17,7 +17,7 @@ class VersionDao {
 
     if (recipes.isEmpty) {
       var result = db.rawInsert(
-          "INSERT Into Version (id,recipe_id,latest_update_date,star_count,comment)"
+          "INSERT Into Version (id,recipe_id,update_date,star_count,comment)"
           " VALUES (?,?,?,?,?)",
           [
             1,
@@ -29,7 +29,7 @@ class VersionDao {
       return result;
     } else {
       var result = db.rawInsert(
-          "INSERT Into Version (id,recipe_id,latest_update_date,star_count,comment)"
+          "INSERT Into Version (id,recipe_id,update_date,star_count,comment)"
           " VALUES (?,?,?,?,?)",
           [
             recipes[0].getId + 1,
@@ -48,16 +48,17 @@ class VersionDao {
 
     List<Map<String, dynamic>> result;
     if (recipeId != null) {
-      result = await db
-          .rawQuery('SELECT * FROM Version WHERE recipe_id = ?', [recipeId]);
+      result = await db.rawQuery(
+          'SELECT * FROM Version WHERE recipe_id = ? ORDER BY id DESC',
+          [recipeId]);
     } else {
       result = await db.rawQuery('SELECT * FROM Version');
     }
 
-    List<Version> recipes = result.isNotEmpty
+    List<Version> versions = result.isNotEmpty
         ? result.map((item) => Version.fromDatabaseJson(item)).toList()
         : [];
-    return recipes;
+    return versions;
   }
 
   // Delete version.
@@ -73,6 +74,36 @@ class VersionDao {
     final db = await dbProvider.database;
     var result = await db
         .rawDelete('DELETE FROM Version WHERE recipe_id = ?', [recipeId]);
+
+    return result;
+  }
+
+  // Update star count.
+  Future<int> updateStarCount(Version version) async {
+    final db = await dbProvider.database;
+    var result = await db.rawUpdate(
+        'UPDATE Version SET update_date = ?, star_count = ? WHERE id = ? AND recipe_id = ?',
+        [
+          version.getLatestUpdateDate,
+          version.getStarCount,
+          version.getId,
+          version.getRecipeId,
+        ]);
+
+    return result;
+  }
+
+  // Update comment.
+  Future<int> updateComment(Version version) async {
+    final db = await dbProvider.database;
+    var result = await db.rawUpdate(
+        'UPDATE Version SET update_date = ?, comment = ? WHERE id = ? AND recipe_id = ?',
+        [
+          version.getLatestUpdateDate,
+          version.getComment,
+          version.getId,
+          version.getRecipeId,
+        ]);
 
     return result;
   }

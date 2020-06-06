@@ -1,20 +1,16 @@
 class Version {
   final int id;
   final int recipeId;
-  final String latestUpdateDate;
+  final String updateDate;
   final int starCount;
   final String comment;
 
   // Constructor.
   Version(
-      {this.id,
-      this.recipeId,
-      this.latestUpdateDate,
-      this.starCount,
-      this.comment});
+      {this.id, this.recipeId, this.updateDate, this.starCount, this.comment});
 
   int get getRecipeId => recipeId;
-  String get getLatestUpdateDate => latestUpdateDate;
+  String get getLatestUpdateDate => updateDate;
   int get getId => id;
   int get getStarCount => starCount;
   String get getComment => comment;
@@ -22,7 +18,7 @@ class Version {
   factory Version.fromDatabaseJson(Map<String, dynamic> data) => Version(
         id: data['id'],
         recipeId: data['recipe_id'],
-        latestUpdateDate: data['latest_update_date'],
+        updateDate: data['update_date'],
         starCount: data['star_count'],
         comment: data['comment'],
       );
@@ -30,7 +26,7 @@ class Version {
   Map<String, dynamic> toDatabaseJson() => {
         "id": this.id,
         "recipe_id": this.recipeId,
-        "latest_update_date": this.latestUpdateDate,
+        "latest_update_date": this.updateDate,
         "star_count": this.starCount,
         "comment": this.comment,
       };

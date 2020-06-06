@@ -77,7 +77,11 @@ class ShowCurryItemList extends StatelessWidget {
                   child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, '/version-management',
-                            arguments: item.id);
+                            arguments: {
+                              "id": item.id,
+                              "maxVersion": item.getMaxVersion,
+                              "starCount": item.getStarCount,
+                            });
                       },
                       child: Card(
                         child: ListTile(
@@ -90,10 +94,6 @@ class ShowCurryItemList extends StatelessWidget {
                             item.getName,
                             style: TextStyle(fontSize: 20.0),
                           ),
-                          subtitle: Text("latest update: " +
-                              item.latestUpdateDate.toString() +
-                              "    ★ " +
-                              item.starCount.toString()),
                         ),
                       )),
                 ),

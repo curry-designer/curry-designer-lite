@@ -4,6 +4,7 @@ import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe.dart';
+import 'package:intl/intl.dart';
 
 class VersionManagement extends StatelessWidget {
   @override
@@ -19,92 +20,285 @@ class VersionManagement extends StatelessWidget {
 class _VersionManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context).settings.arguments;
+    final Map args = ModalRoute.of(context).settings.arguments;
+    final currentVersion =
+        context.select((VersionStore store) => store.getVersion) == null
+            ? args["maxVersion"]
+            : context.select((VersionStore store) => store.getVersion);
+    final versionMap =
+        context.select((VersionStore store) => store.getMapVersions);
+    final starCount =
+        context.select((VersionStore store) => store.getStarCount) == null
+            ? args["starCount"]
+            : context.select((VersionStore store) => store.getStarCount);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(
-              Icons.home,
+    return FutureBuilder<List<Version>>(
+      future: context.select(
+          (VersionStore store) => store.fetchVersions(recipeId: args["id"])),
+      builder: (context, AsyncSnapshot<List<Version>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+        // Convert version list to map.
+        context.select((VersionStore store) =>
+            store.convertVersionListsToMap(snapshot.data));
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+                icon: Icon(
+                  Icons.home,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/");
+                }),
+            title: Text('バージョン管理'),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            DropdownButton(
+                              hint: Text('version: ' +
+                                  snapshot.data[snapshot.data.length - 1].getId
+                                      .toString()),
+                              value: currentVersion,
+                              items: snapshot.data.map((item) {
+                                return DropdownMenuItem(
+                                  child: Text(
+                                    'version: ' + item.getId.toString(),
+                                    style: TextStyle(fontSize: 25.0),
+                                  ),
+                                  value: item.getId,
+                                );
+                              }).toList(),
+                              onChanged: (value) => context
+                                  .read<VersionStore>()
+                                  .setDropdownVersion(value),
+                            ),
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    padding: const EdgeInsets.all(0.0),
+                                    width: 30.0,
+                                    child: IconButton(
+                                      padding: const EdgeInsets.all(0.0),
+                                      icon: Icon(
+                                        // Add the lines from here...
+                                        starCount >= 1
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: starCount >= 1
+                                            ? Colors.amber
+                                            : null,
+                                        size: 30,
+                                      ),
+                                      onPressed: () => updateStarCount(
+                                          versionMap[currentVersion],
+                                          1,
+                                          context),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(0.0),
+                                    width: 30.0,
+                                    child: IconButton(
+                                      padding: const EdgeInsets.all(0.0),
+                                      icon: Icon(
+                                        // Add the lines from here...
+                                        starCount >= 2
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: starCount >= 2
+                                            ? Colors.amber
+                                            : null,
+                                        size: 30,
+                                      ),
+                                      onPressed: () => updateStarCount(
+                                          versionMap[currentVersion],
+                                          2,
+                                          context),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(0.0),
+                                    width: 30.0,
+                                    child: IconButton(
+                                      padding: const EdgeInsets.all(0.0),
+                                      icon: Icon(
+                                        // Add the lines from here...
+                                        starCount >= 3
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: starCount >= 3
+                                            ? Colors.amber
+                                            : null,
+                                        size: 30,
+                                      ),
+                                      onPressed: () => updateStarCount(
+                                          versionMap[currentVersion],
+                                          3,
+                                          context),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(0.0),
+                                    width: 30.0,
+                                    child: IconButton(
+                                      padding: const EdgeInsets.all(0.0),
+                                      icon: Icon(
+                                        // Add the lines from here...
+                                        starCount >= 4
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: starCount >= 4
+                                            ? Colors.amber
+                                            : null,
+                                        size: 30,
+                                      ),
+                                      onPressed: () => updateStarCount(
+                                          versionMap[currentVersion],
+                                          4,
+                                          context),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(0.0),
+                                    width: 30.0,
+                                    child: IconButton(
+                                      padding: const EdgeInsets.all(0.0),
+                                      icon: Icon(
+                                        // Add the lines from here...
+                                        starCount >= 5
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: starCount >= 5
+                                            ? Colors.amber
+                                            : null,
+                                        size: 30,
+                                      ),
+                                      onPressed: () => updateStarCount(
+                                          versionMap[currentVersion],
+                                          5,
+                                          context),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text("Update Date: " +
+                            versionMap[currentVersion].getLatestUpdateDate),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(30, 20, 10, 0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "メモ",
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                            )),
+                        Container(
+                          margin: const EdgeInsets.all(0.0),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          child: new TextField(
+                            controller: new TextEditingController(
+                                text: versionMap[currentVersion].getComment),
+                            onChanged: (String value) => updateComment(
+                                versionMap[currentVersion], value, context),
+                            maxLength: 140,
+                            maxLines: 10,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, "/");
-            }),
-        title: Text('バージョン管理'),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FutureBuilder<List<Version>>(
-                  future: context.select((VersionStore store) =>
-                      store.fetchVersions(recipeId: args)),
-                  builder: (context, AsyncSnapshot<List<Version>> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    return DropdownButton(
-                      hint:
-                          Text('version: ' + snapshot.data[0].getId.toString()),
-                      value: context
-                          .select((VersionStore store) => store.getVersion),
-                      items: snapshot.data.map((item) {
-                        return DropdownMenuItem(
-                          child: Text('version: ' + item.getId.toString()),
-                          value: item.getId,
-                        );
-                      }).toList(),
-                      onChanged: (value) => context
-                          .read<VersionStore>()
-                          .setDropdownVersion(value),
-                    );
-                  })
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.history,
+                  size: 40,
+                ),
+                title: Text(
+                  'バージョン管理',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  const IconData(0xe800, fontFamily: 'Material'),
+                  color: Color.fromRGBO(105, 105, 105, 1.0),
+                  size: 40,
+                ),
+                title: Text(
+                  '材料',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  const IconData(0xe800, fontFamily: 'Knife'),
+                  color: Color.fromRGBO(105, 105, 105, 1.0),
+                  size: 40,
+                ),
+                title: Text(
+                  '作り方',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
             ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.history,
-              size: 40,
-            ),
-            title: Text(
-              'バージョン管理',
-              style: TextStyle(fontSize: 12),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              const IconData(0xe800, fontFamily: 'Material'),
-              color: Color.fromRGBO(105, 105, 105, 1.0),
-              size: 40,
-            ),
-            title: Text(
-              '材料',
-              style: TextStyle(fontSize: 12),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              const IconData(0xe800, fontFamily: 'Knife'),
-              color: Color.fromRGBO(105, 105, 105, 1.0),
-              size: 40,
-            ),
-            title: Text(
-              '作り方',
-              style: TextStyle(fontSize: 12),
-            ),
-          ),
-        ],
 //        currentIndex: _selectedIndex,
 //        selectedItemColor: Colors.amber[800],
-        onTap: (int index) {
-          Navigator.pushNamed(context, '/material-note');
-        },
-      ),
+            onTap: (int index) {
+              Navigator.pushNamed(context, '/material-note');
+            },
+          ),
+        );
+      },
     );
+  }
+
+  void updateStarCount(Version version, int i, BuildContext context) {
+    // Set star count.
+    context.read<VersionStore>().setStarCount(i);
+
+    // Update version in db.
+    context.read<VersionStore>().updateStarCount(new Version(
+          id: version.getId,
+          recipeId: version.getRecipeId,
+          updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+          starCount: i,
+        ));
+  }
+
+  void updateComment(Version version, String value, BuildContext context) {
+    // Set star count.
+    context.read<VersionStore>().setComment(value);
+
+    // Update version in db.
+    context.read<VersionStore>().updateComment(new Version(
+          id: version.getId,
+          recipeId: version.getRecipeId,
+          updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+          comment: value,
+        ));
   }
 }

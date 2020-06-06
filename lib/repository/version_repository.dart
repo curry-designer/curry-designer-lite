@@ -13,4 +13,8 @@ class VersionRepository {
 
   Future deleteVersionByRecipeId(int recipeId) =>
       versionDao.deleteVersionByRecipeId(recipeId);
+
+  Future updateStarCount(Version item) => versionDao.updateStarCount(item);
+
+  Future updateComment(Version item) => versionDao.updateComment(item);
 }

@@ -50,7 +50,7 @@ class DatabaseProvider {
     await database.execute("CREATE TABLE Version ("
         "id INTEGER,"
         "recipe_id INTEGER,"
-        "latest_update_date TEXT,"
+        "update_date TEXT,"
         "star_count INTEGER,"
         "comment TEXT,"
         "PRIMARY KEY (id, recipe_id)"

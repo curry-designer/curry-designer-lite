@@ -20,15 +20,15 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         accentColor: Colors.amberAccent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Cursive', //TODO:Fontどうするか決めたい
+        //fontFamily: 'Cursive', //TODO:Fontどうするか決めたい
       ),
       // MaterialApp contains our top-level Navigator
-      initialRoute: '/',
+      initialRoute: '/material-note',
       routes: {
         '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
         '/version-management': (BuildContext context) => VersionManagement(),
-        '/material-note': (BuildContext context) => TextWidget(),
+        '/material-note': (BuildContext context) => MaterialNote(),
       },
     );
   }

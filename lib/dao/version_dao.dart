@@ -9,7 +9,7 @@ class VersionDao {
   Future<int> createVersion(Version version) async {
     final db = await dbProvider.database;
     var latestVersion = await db.rawQuery(
-        "SELECT MAX(v.id) as id FROM Version v WHERE v.recipe_id = ? GROUP BY v.id, v.recipe_id",
+        "SELECT MAX(v.id) as id FROM Version v WHERE v.recipe_id = ? GROUP BY v.recipe_id",
         [version.getRecipeId]);
     List<Version> recipes = latestVersion.isNotEmpty
         ? latestVersion.map((item) => Version.fromDatabaseJson(item)).toList()

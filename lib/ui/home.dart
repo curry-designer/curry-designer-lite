@@ -21,36 +21,37 @@ class Home extends StatelessWidget {
         )
       ],
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-                icon: Icon(
-                  Icons.home,
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, "/");
-                }),
-            title: Text(title),
-          ),
-          body: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "レシピ一覧",
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                  )),
-              Expanded(
-                child: ShowCurryItemList(),
-              )
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
-            child: Icon(Icons.add),
-          )),
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(
+                Icons.home,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, "/");
+              }),
+          title: Text(title),
+        ),
+        body: Column(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "レシピ一覧",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                )),
+            Expanded(
+              child: ShowCurryItemList(),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
+          child: Icon(Icons.add),
+        ),
+      ),
     ); // This tra
   }
 }
@@ -94,6 +95,7 @@ class ShowCurryItemList extends StatelessWidget {
                             item.getName,
                             style: TextStyle(fontSize: 20.0),
                           ),
+                          subtitle: Text("更新日: " + item.getLatestUpdateDate),
                         ),
                       )),
                 ),
@@ -118,7 +120,16 @@ class ShowCurryItemList extends StatelessWidget {
             builder: (_) {
               return AlertDialog(
                 title: Text('削除'),
-                content: Text('このレシピを削除してもよろしいですか？'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('このレシピを削除しますか？'),
+                    Text(
+                      '\n※削除するとバージョンも全て削除されます。\n※復元もできません。',
+                      style: TextStyle(fontSize: 10.0),
+                    ),
+                  ],
+                ),
                 actions: <Widget>[
                   FlatButton(
                     child: Text("CANCEL"),

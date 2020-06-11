@@ -26,7 +26,7 @@ class _RegisterRecipeForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<RecipeStore>(context);
-    bloc.fetchRecipes();
+    context.select((RecipeStore store) => store.fetchRecipes);
     return Scaffold(
       appBar: AppBar(
         title: Text('レシピの登録'),
@@ -47,7 +47,7 @@ class _RegisterRecipeForm extends StatelessWidget {
                   return value.isEmpty ? 'レシピ名を入力してください。' : null;
                 },
                 onChanged: (String value) {
-                  bloc.registerCurryRecipeName(value);
+                  context.read<RecipeStore>().registerCurryRecipeName(value);
                 },
               ),
               RaisedButton(
@@ -70,7 +70,7 @@ class _RegisterRecipeForm extends StatelessWidget {
       List<Recipe> recipes =
           await context.read<RecipeStore>().fetchLatestRecipesId();
       int recipeId = recipes[0].getId;
-      await context.read<VersionStore>().createRecipe(Version(
+      await context.read<VersionStore>().createVersion(Version(
             recipeId: recipeId,
             updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
             starCount: 0,

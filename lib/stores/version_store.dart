@@ -12,12 +12,15 @@ class VersionStore with ChangeNotifier {
   final Map<int, Version> _map = {};
   int _starCount;
   String _comment;
+  final _textController = new TextEditingController();
 
   // Getter method.
   Future<List<Version>> get getAllVersions => fetchVersions();
   int get getVersion => _version;
   Map<int, Version> get getMapVersions => _map;
   int get getStarCount => _starCount;
+  String get getComment => _comment;
+  TextEditingController get getController => _textController;
 
   // Fetch all curry recipes.
   Future<List<Version>> fetchVersions({int recipeId}) async {
@@ -25,7 +28,7 @@ class VersionStore with ChangeNotifier {
   }
 
   // Create new curry item.
-  Future<void> createRecipe(Version item) async {
+  Future<void> createVersion(Version item) async {
     await _versionRepository.createVersion(item);
     fetchVersions();
     notifyListeners();
@@ -41,6 +44,7 @@ class VersionStore with ChangeNotifier {
   void setDropdownVersion(int version) {
     _version = version;
     _starCount = _map[version].getStarCount;
+    _comment = _map[version].getComment;
     notifyListeners();
   }
 
@@ -63,8 +67,20 @@ class VersionStore with ChangeNotifier {
     notifyListeners();
   }
 
+  void setText(String text) {
+    _textController.text = text;
+    notifyListeners();
+  }
+
   void updateComment(Version item) async {
     await _versionRepository.updateComment(item);
     fetchVersions();
+//    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 }

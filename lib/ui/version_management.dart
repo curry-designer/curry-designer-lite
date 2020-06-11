@@ -46,7 +46,10 @@ class _VersionManagement extends StatelessWidget {
             store.convertVersionListsToMap(snapshot.data));
 
         // Set initial comment.
-        textController.text = versionMap[currentVersion].getComment;
+        textController.text = versionMap[currentVersion].getComment == null ||
+                versionMap[currentVersion].getComment == ''
+            ? ''
+            : versionMap[currentVersion].getComment;
         textController.selection =
             TextSelection.collapsed(offset: textController.text.length);
 

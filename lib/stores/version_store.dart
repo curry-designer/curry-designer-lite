@@ -13,6 +13,7 @@ class VersionStore with ChangeNotifier {
   int _starCount;
   String _comment;
   final _textController = new TextEditingController();
+  bool _isTextFieldOpen = true;
 
   // Getter method.
   Future<List<Version>> get getAllVersions => fetchVersions();
@@ -21,6 +22,7 @@ class VersionStore with ChangeNotifier {
   int get getStarCount => _starCount;
   String get getComment => _comment;
   TextEditingController get getController => _textController;
+  bool get isTextFieldOpen => _isTextFieldOpen;
 
   // Fetch all curry recipes.
   Future<List<Version>> fetchVersions({int recipeId}) async {
@@ -76,6 +78,16 @@ class VersionStore with ChangeNotifier {
     await _versionRepository.updateComment(item);
     fetchVersions();
 //    notifyListeners();
+  }
+
+  void isTextFieldOpenTrue() {
+    _isTextFieldOpen = true;
+    notifyListeners();
+  }
+
+  void isTextFieldOpenFalse() {
+    _isTextFieldOpen = false;
+    notifyListeners();
   }
 
   @override

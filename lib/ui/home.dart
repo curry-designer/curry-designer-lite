@@ -47,9 +47,11 @@ class Home extends StatelessWidget {
             )
           ],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
-          child: Icon(Icons.add),
+          icon: Icon(Icons.add),
+          label: Text("レシピの追加"),
         ),
       ),
     ); // This tra

@@ -34,6 +34,9 @@ class _VersionManagement extends StatelessWidget {
             : context.select((VersionStore store) => store.getStarCount);
     final textController =
         context.select((VersionStore store) => store.getController);
+    final isTextFieldOpen =
+        context.select((VersionStore store) => store.isTextFieldOpen);
+
     return FutureBuilder<List<Version>>(
       future: context.select(
           (VersionStore store) => store.fetchVersions(recipeId: args["id"])),
@@ -70,6 +73,7 @@ class _VersionManagement extends StatelessWidget {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
                 context.read<VersionStore>().setDropdownVersion(currentVersion);
+                context.read<VersionStore>().isTextFieldOpenTrue();
               }
             },
             child: SingleChildScrollView(
@@ -262,26 +266,53 @@ class _VersionManagement extends StatelessWidget {
                                   value,
                                   context,
                                   textController),
-                              onSubmitted: (value) =>
-                                  textController.text = value,
+                              onTap: () => context
+                                  .read<VersionStore>()
+                                  .isTextFieldOpenFalse(),
                               maxLength: 140,
-                              maxLines: 15,
+                              maxLines: 13,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                               ),
                             ),
                           ),
-                          Container(
-                            alignment: Alignment.bottomRight,
-                            padding: const EdgeInsets.fromLTRB(0, 70, 15, 30),
-                            child: FloatingActionButton(
-                              onPressed: () => _showDialog(
-                                  versionMap[currentVersion],
-                                  maxVersion,
-                                  context),
-                              child: Icon(Icons.add),
-                            ),
-                          ),
+//                          Container(
+//                            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+//                            child: RaisedButton(
+//                              child: Text(
+//                                "バージョン追加",
+//                                style: TextStyle(fontSize: 20.0),
+//                              ),
+//                              color: Colors.amberAccent,
+//                              shape: StadiumBorder(),
+//                              onPressed: () => _showDialog(
+//                                  versionMap[currentVersion],
+//                                  maxVersion,
+//                                  context),
+//                            ),
+//                          ),
+//                          Container(
+//                            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+//                            child: RaisedButton(
+//                              child: Text("バージョン追加",
+//                                  style: TextStyle(fontSize: 20.0)),
+//                              color: Colors.white,
+//                              shape: StadiumBorder(
+//                                side: BorderSide(color: Colors.amberAccent),
+//                              ),
+//                              onPressed: () => _showDialog(
+//                                  versionMap[currentVersion],
+//                                  maxVersion,
+//                                  context),
+//                            ),
+//                          ),
+//                          FloatingActionButton(
+//                            onPressed: () => _showDialog(
+//                                versionMap[currentVersion],
+//                                maxVersion,
+//                                context),
+//                            child: Icon(Icons.add),
+//                          ),
                         ],
                       ),
                     ),
@@ -290,6 +321,15 @@ class _VersionManagement extends StatelessWidget {
               ),
             ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: isTextFieldOpen
+              ? FloatingActionButton.extended(
+                  onPressed: () => _showDialog(
+                      versionMap[currentVersion], maxVersion, context),
+                  icon: Icon(Icons.add),
+                  label: Text("レシピの更新"),
+                )
+              : SizedBox(),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -377,17 +417,13 @@ class _VersionManagement extends StatelessWidget {
         ));
   }
 
-  void _setComment(TextEditingController controller) {
-    controller.text;
-  }
-
   void _showDialog(Version version, int maxVersion, BuildContext context) => {
         showDialog(
             context: context,
             builder: (_) {
               return AlertDialog(
-                title: Text('バージョンの追加'),
-                content: Text('新しくバージョンを追加しますか？'),
+                title: Text('レシピの更新'),
+                content: Text('レシピの更新をしますか？'),
                 actions: <Widget>[
                   FlatButton(
                     child: Text("CANCEL"),

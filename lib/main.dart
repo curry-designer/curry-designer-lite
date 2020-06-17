@@ -4,7 +4,7 @@ import 'ui/register_recipe_form.dart';
 import 'ui/version_management.dart';
 import 'ui/material_note.dart';
 import 'package:provider/provider.dart';
-import './stores/curry_item_store.dart';
+import './stores/recipe_store.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         accentColor: Colors.amberAccent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Cursive', //TODO:Fontどうするか決めたい
+//        fontFamily: 'Cursive', //TODO:Fontどうするか決めたい
       ),
       // MaterialApp contains our top-level Navigator
       initialRoute: '/',

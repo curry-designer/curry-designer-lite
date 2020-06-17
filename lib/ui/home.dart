@@ -1,7 +1,8 @@
-import 'package:currydesignerlite/stores/curry_item_store.dart';
+import 'package:currydesignerlite/stores/recipe_store.dart';
+import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../models/curry_item.dart';
+import '../models/recipe.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -10,39 +11,87 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CurryItemStore>(
-      create: (_) => CurryItemStore(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RecipeStore>(
+          create: (context) => RecipeStore(),
+        ),
+        ChangeNotifierProvider<VersionStore>(
+          create: (context) => VersionStore(),
+        )
+      ],
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-                icon: Icon(
-                  Icons.home,
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, "/");
-                }),
-            title: Text(title),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.home,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/");
+            },
           ),
-          body: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "レシピ一覧",
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                  )),
-              Expanded(
-                child: ShowCurryItemList(),
-              )
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
-            child: Icon(Icons.add),
-          )),
+          title: Text(title),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+              ),
+              onPressed: () {},
+            ),
+          ],
+        ),
+        body: Column(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "レシピ一覧",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                )),
+            Expanded(
+              child: ShowCurryItemList(),
+            )
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
+          icon: Icon(Icons.add),
+          label: Text("レシピの追加"),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.search,
+                size: 40,
+              ),
+              title: Text(
+                '検索',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.reorder,
+                size: 40,
+              ),
+              title: Text(
+                '並び替え',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ],
+//        currentIndex: _selectedIndex,
+//        selectedItemColor: Colors.amber[800],
+          onTap: (int index) {
+            Navigator.pushNamed(context, '/material-note');
+          },
+        ),
+      ),
     ); // This tra
   }
 }
@@ -50,11 +99,9 @@ class Home extends StatelessWidget {
 class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<CurryItemStore>(context);
-    Future<List<CurryItem>> curryItemList = bloc.getCurryItemList;
-    return FutureBuilder<List<CurryItem>>(
-        future: bloc.getCurryItemList,
-        builder: (context, AsyncSnapshot<List<CurryItem>> snapshot) {
+    return FutureBuilder<List<Recipe>>(
+        future: context.select((RecipeStore store) => store.getRecipes),
+        builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
@@ -71,7 +118,11 @@ class ShowCurryItemList extends StatelessWidget {
                   child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, '/version-management',
-                            arguments: item.getName);
+                            arguments: {
+                              "id": item.id,
+                              "maxVersion": item.getMaxVersion,
+                              "starCount": item.getStarCount,
+                            });
                       },
                       child: Card(
                         child: ListTile(
@@ -84,10 +135,7 @@ class ShowCurryItemList extends StatelessWidget {
                             item.getName,
                             style: TextStyle(fontSize: 20.0),
                           ),
-                          subtitle: Text("latest update: " +
-                              item.latestUpdateDate.toString() +
-                              "      ★" +
-                              item.starCount.toString()),
+                          subtitle: Text("更新日: " + item.getLatestUpdateDate),
                         ),
                       )),
                 ),
@@ -106,14 +154,22 @@ class ShowCurryItemList extends StatelessWidget {
         });
   }
 
-  void _showDialog(int i, CurryItem item, context) => {
+  void _showDialog(int i, Recipe item, BuildContext context) => {
         showDialog(
             context: context,
             builder: (_) {
-              final bloc = Provider.of<CurryItemStore>(context);
               return AlertDialog(
                 title: Text('削除'),
-                content: Text('このレシピを削除してもよろしいですか？'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('このレシピを削除しますか？'),
+                    Text(
+                      '\n※削除するとバージョンも全て削除されます。\n※復元もできません。',
+                      style: TextStyle(fontSize: 10.0),
+                    ),
+                  ],
+                ),
                 actions: <Widget>[
                   FlatButton(
                     child: Text("CANCEL"),
@@ -121,15 +177,15 @@ class ShowCurryItemList extends StatelessWidget {
                   ),
                   FlatButton(
                       child: Text("OK"),
-                      onPressed: () => _deleteRecipe(item, context, bloc))
+                      onPressed: () => _deleteRecipe(item, context))
                 ],
               );
             })
       };
 
-  void _deleteRecipe(CurryItem item, context, bloc) => {
-        Provider.of<CurryItemStore>(context, listen: false)
-            .deleteCurryItem(item.id),
-        Navigator.pushNamed(context, "/")
+  void _deleteRecipe(Recipe item, BuildContext context) => {
+        context.read<RecipeStore>().deleteRecipe(item.id),
+        context.read<VersionStore>().deleteVersionByRecipeId(item.id),
+        Navigator.pop(context)
       };
 }

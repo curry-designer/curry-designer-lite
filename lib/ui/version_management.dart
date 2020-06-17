@@ -33,10 +33,6 @@ class _VersionManagement extends StatelessWidget {
         context.select((VersionStore store) => store.getStarCount) == null
             ? args["starCount"]
             : context.select((VersionStore store) => store.getStarCount);
-    final textController =
-        context.select((VersionStore store) => store.getController);
-    final isTextFieldOpen =
-        context.select((VersionStore store) => store.isTextFieldOpen);
 
     FocusScopeNode currentFocus = FocusScope.of(context);
 
@@ -51,25 +47,19 @@ class _VersionManagement extends StatelessWidget {
         context.select((VersionStore store) =>
             store.convertVersionListsToMap(snapshot.data));
 
-        // Set initial comment.
-        textController.text = versionMap[currentVersion].getComment == null ||
-                versionMap[currentVersion].getComment == ''
-            ? ''
-            : versionMap[currentVersion].getComment;
-
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.home,
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, "/");
                 }),
-            title: Text('バージョン管理'),
+            title: const Text('バージョン管理'),
             actions: <Widget>[
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.settings,
                 ),
                 onPressed: () {},
@@ -242,9 +232,9 @@ class _VersionManagement extends StatelessWidget {
                             padding: EdgeInsets.fromLTRB(30, 0, 10, 0),
                             child: Align(
                               alignment: Alignment.topLeft,
-                              child: Text(
+                              child: const Text(
                                 "メモ",
-                                style: TextStyle(fontSize: 20.0),
+                                style: const TextStyle(fontSize: 20.0),
                               ),
                             ),
                           ),
@@ -256,17 +246,23 @@ class _VersionManagement extends StatelessWidget {
                               key: Key(currentVersion.toString()),
                               initialValue:
                                   versionMap[currentVersion].getComment,
-                              onChanged: (value) => updateCommentByController(
-                                  versionMap[currentVersion],
-                                  value,
-                                  context,
-                                  textController),
+                              onChanged: (value) =>
+                                  context.read<VersionStore>().updateComment(
+                                        new Version(
+                                          id: versionMap[currentVersion].getId,
+                                          recipeId: versionMap[currentVersion]
+                                              .getRecipeId,
+                                          updateDate: DateFormat("yyyy.MM.dd")
+                                              .format(new DateTime.now()),
+                                          comment: value,
+                                        ),
+                                      ),
                               onTap: () => context
                                   .read<VersionStore>()
                                   .isTextFieldOpenFalse(),
                               maxLength: 140,
                               maxLines: 13,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                               ),
                             ),
@@ -284,41 +280,41 @@ class _VersionManagement extends StatelessWidget {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () =>
                 _showDialog(versionMap[currentVersion], maxVersion, context),
-            icon: Icon(Icons.add),
-            label: Text("このバージョンから更新"),
+            icon: const Icon(Icons.add),
+            label: const Text("このバージョンから更新"),
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: const Icon(
                   Icons.history,
                   size: 40,
                 ),
-                title: Text(
+                title: const Text(
                   'バージョン管理',
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12),
                 ),
               ),
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: const Icon(
                   const IconData(0xe800, fontFamily: 'Material'),
                   color: Color.fromRGBO(105, 105, 105, 1.0),
                   size: 40,
                 ),
-                title: Text(
+                title: const Text(
                   '材料',
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12),
                 ),
               ),
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: const Icon(
                   const IconData(0xe800, fontFamily: 'Knife'),
                   color: Color.fromRGBO(105, 105, 105, 1.0),
                   size: 40,
                 ),
                 title: Text(
                   '作り方',
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12),
                 ),
               ),
             ],
@@ -346,48 +342,20 @@ class _VersionManagement extends StatelessWidget {
         ));
   }
 
-  void updateComment(Version version, String value, BuildContext context) {
-    // Set comment.
-//    context.read<VersionStore>().setComment(value);
-
-    // Update version in db.
-    context.read<VersionStore>().updateComment(new Version(
-          id: version.getId,
-          recipeId: version.getRecipeId,
-          updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-          comment: value,
-        ));
-  }
-
-  void updateCommentByController(
-    Version version,
-    String value,
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    // Update version in db.
-    context.read<VersionStore>().updateComment(new Version(
-          id: version.getId,
-          recipeId: version.getRecipeId,
-          updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-          comment: value,
-        ));
-  }
-
   void _showDialog(Version version, int maxVersion, BuildContext context) => {
         showDialog(
             context: context,
             builder: (_) {
               return AlertDialog(
-                title: Text('レシピの更新'),
-                content: Text('レシピの更新をしますか？'),
+                title: const Text('レシピの更新'),
+                content: const Text('レシピの更新をしますか？'),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text("CANCEL"),
+                    child: const Text("CANCEL"),
                     onPressed: () => Navigator.pop(context),
                   ),
                   FlatButton(
-                      child: Text("OK"),
+                      child: const Text("OK"),
                       onPressed: () =>
                           _createVersion(version, maxVersion, context)),
                 ],

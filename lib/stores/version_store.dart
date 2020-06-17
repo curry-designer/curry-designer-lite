@@ -12,7 +12,6 @@ class VersionStore with ChangeNotifier {
   final Map<int, Version> _map = {};
   int _starCount;
   String _comment;
-  final _textController = new TextEditingController();
   bool _isTextFieldOpen = true;
 
   // Getter method.
@@ -21,7 +20,6 @@ class VersionStore with ChangeNotifier {
   Map<int, Version> get getMapVersions => _map;
   int get getStarCount => _starCount;
   String get getComment => _comment;
-  TextEditingController get getController => _textController;
   bool get isTextFieldOpen => _isTextFieldOpen;
 
   // Fetch all curry recipes.
@@ -69,15 +67,10 @@ class VersionStore with ChangeNotifier {
     notifyListeners();
   }
 
-  void setText(String text) {
-    _textController.text = text;
-    notifyListeners();
-  }
-
   void updateComment(Version item) async {
     await _versionRepository.updateComment(item);
     fetchVersions();
-//    notifyListeners();
+    notifyListeners();
   }
 
   void isTextFieldOpenTrue() {
@@ -88,11 +81,5 @@ class VersionStore with ChangeNotifier {
   void isTextFieldOpenFalse() {
     _isTextFieldOpen = false;
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
   }
 }

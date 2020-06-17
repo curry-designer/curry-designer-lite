@@ -23,13 +23,22 @@ class Home extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-              icon: Icon(
-                Icons.home,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/");
-              }),
+            icon: Icon(
+              Icons.home,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/");
+            },
+          ),
           title: Text(title),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+              ),
+              onPressed: () {},
+            ),
+          ],
         ),
         body: Column(
           children: <Widget>[
@@ -52,6 +61,35 @@ class Home extends StatelessWidget {
           onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
           icon: Icon(Icons.add),
           label: Text("レシピの追加"),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.search,
+                size: 40,
+              ),
+              title: Text(
+                '検索',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.reorder,
+                size: 40,
+              ),
+              title: Text(
+                '並び替え',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ],
+//        currentIndex: _selectedIndex,
+//        selectedItemColor: Colors.amber[800],
+          onTap: (int index) {
+            Navigator.pushNamed(context, '/material-note');
+          },
         ),
       ),
     ); // This tra

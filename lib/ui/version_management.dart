@@ -36,6 +36,8 @@ class _VersionManagement extends StatelessWidget {
 
     FocusScopeNode currentFocus = FocusScope.of(context);
 
+    final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
+
     return FutureBuilder<List<Version>>(
       future: context.select(
           (VersionStore store) => store.fetchVersions(recipeId: args["id"])),
@@ -66,6 +68,7 @@ class _VersionManagement extends StatelessWidget {
               ),
             ],
           ),
+          resizeToAvoidBottomInset: false,
           body: GestureDetector(
             // Keyboard is closed when tapping anywhere.
             onTap: () {
@@ -76,11 +79,12 @@ class _VersionManagement extends StatelessWidget {
               }
             },
             child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(top: 20.0),
-                    child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: bottomSpace),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(top: 20.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -270,12 +274,11 @@ class _VersionManagement extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-          resizeToAvoidBottomPadding: false,
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () =>

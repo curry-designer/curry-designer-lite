@@ -7,12 +7,14 @@ class RecipeStore with ChangeNotifier {
   // Get instance of the Repository.
   final _recipeRepository = RecipeRepository();
 
-  // Initialize recipe name.
+  // Initialize each value.
   String _recipeName = "";
+  String _searchResult = "";
 
   // Getter method.
   Future<List<Recipe>> get getRecipes => fetchRecipes();
   String get getCurryRecipeName => _recipeName;
+  String get getSearchResult => _searchResult;
 
   // Fetch all curry recipes.
   Future<List<Recipe>> fetchRecipes({String query}) async {
@@ -42,5 +44,10 @@ class RecipeStore with ChangeNotifier {
   // Register curry recipe name.
   void registerCurryRecipeName(String name) {
     _recipeName = name;
+  }
+
+  // Set search result.
+  void setSearchResult(String searchResult) {
+    _searchResult = searchResult;
   }
 }

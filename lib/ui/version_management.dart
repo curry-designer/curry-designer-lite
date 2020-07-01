@@ -22,6 +22,7 @@ class _VersionManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map args = ModalRoute.of(context).settings.arguments;
+    final recipeName = args["recipeName"];
     final maxVersion = args["maxVersion"];
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null
@@ -58,7 +59,7 @@ class _VersionManagement extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, "/");
                 }),
-            title: const Text('バージョン管理'),
+            title: Text(recipeName),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(
@@ -74,8 +75,6 @@ class _VersionManagement extends StatelessWidget {
             onTap: () {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
-                // Make the update button visible.
-                context.read<VersionStore>().isTextFieldOpenTrue();
               }
             },
             child: SingleChildScrollView(
@@ -84,7 +83,7 @@ class _VersionManagement extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.only(top: 20.0),
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[

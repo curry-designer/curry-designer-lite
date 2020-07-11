@@ -104,76 +104,76 @@ class ShowCurryItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Recipe>>(
-        future: context.select((RecipeStore store) => store.getRecipes),
-        builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
+      future: context.select((RecipeStore store) => store.getRecipes),
+      builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-          // Filtered by search result.
-          final searchResult =
-              context.select((RecipeStore store) => store.getSearchResult);
-          snapshot.data
-              .removeWhere((item) => !(item.getName.contains(searchResult)));
+        // Filtered by search result.
+        final searchResult =
+            context.select((RecipeStore store) => store.getSearchResult);
+        snapshot.data
+            .removeWhere((item) => !(item.getName.contains(searchResult)));
 
-          if (snapshot.data.length == 0) {
-            return Container(
-              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: Text(
-                "検索結果が0件です",
-                style: TextStyle(fontSize: 20.0),
-              ),
-            );
-          } else {
-            return ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemBuilder: (context, i) {
-                final item = snapshot.data[i];
-                return Slidable(
-                  key: Key(item.getName),
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
-                  child: Container(
-                    color: Colors.white,
-                    child: InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/version-management',
-                              arguments: {
-                                "id": item.id,
-                                "recipeName": item.getName,
-                                "maxVersion": item.getMaxVersion,
-                                "starCount": item.getStarCount,
-                              });
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: Icon(
-                              IconData(0xe800, fontFamily: 'Curry'),
-                              color: Color.fromRGBO(105, 105, 105, 1.0),
-                              size: 40,
-                            ),
-                            title: Text(
-                              item.getName,
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            subtitle: Text("更新日: " + item.getLatestUpdateDate),
+        if (snapshot.data.length == 0) {
+          return Container(
+            padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+            child: Text(
+              "検索結果が0件です",
+              style: TextStyle(fontSize: 20.0),
+            ),
+          );
+        } else {
+          return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemBuilder: (context, i) {
+              final item = snapshot.data[i];
+              return Slidable(
+                key: Key(item.getName),
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: Container(
+                  color: Colors.white,
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/note', arguments: {
+                          "id": item.id,
+                          "recipeName": item.getName,
+                          "maxVersion": item.getMaxVersion,
+                          "starCount": item.getStarCount,
+                        });
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: Icon(
+                            IconData(0xe800, fontFamily: 'Curry'),
+                            color: Color.fromRGBO(105, 105, 105, 1.0),
+                            size: 40,
                           ),
-                        )),
+                          title: Text(
+                            item.getName,
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          subtitle: Text("更新日: " + item.getLatestUpdateDate),
+                        ),
+                      )),
+                ),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () => _showDialog(i, snapshot.data[i], context),
                   ),
-                  secondaryActions: <Widget>[
-                    IconSlideAction(
-                      caption: 'Delete',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () => _showDialog(i, snapshot.data[i], context),
-                    ),
-                  ],
-                );
-              },
-              itemCount: snapshot.data.length,
-            );
-          }
-        });
+                ],
+              );
+            },
+            itemCount: snapshot.data.length,
+          );
+        }
+      },
+    );
   }
 
   void _showDialog(int i, Recipe item, BuildContext context) => {
@@ -209,69 +209,5 @@ class ShowCurryItemList extends StatelessWidget {
         context.read<RecipeStore>().deleteRecipe(item.id),
         context.read<VersionStore>().deleteVersionByRecipeId(item.id),
         Navigator.pop(context)
-      };
-
-  void _ListView(AsyncSnapshot<List<Recipe>> snapshot, BuildContext context) =>
-      {
-        if (snapshot.data.length == 0)
-          {
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text("検索結果が０件です"),
-              ),
-            ),
-          }
-        else
-          {
-            ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemBuilder: (context, i) {
-                final item = snapshot.data[i];
-                return Slidable(
-                  key: Key(item.getName),
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
-                  child: Container(
-                    color: Colors.white,
-                    child: InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/version-management',
-                              arguments: {
-                                "id": item.id,
-                                "recipeName": item.getName,
-                                "maxVersion": item.getMaxVersion,
-                                "starCount": item.getStarCount,
-                              });
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: Icon(
-                              IconData(0xe800, fontFamily: 'Curry'),
-                              color: Color.fromRGBO(105, 105, 105, 1.0),
-                              size: 40,
-                            ),
-                            title: Text(
-                              item.getName,
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            subtitle: Text("更新日: " + item.getLatestUpdateDate),
-                          ),
-                        )),
-                  ),
-                  secondaryActions: <Widget>[
-                    IconSlideAction(
-                      caption: 'Delete',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () => _showDialog(i, snapshot.data[i], context),
-                    ),
-                  ],
-                );
-              },
-              itemCount: snapshot.data.length,
-            ),
-          }
       };
 }

@@ -7,16 +7,19 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class HowToMakeNote extends StatelessWidget {
+  HowToMakeNote({Key key, this.args}) : super(key: key);
+  final Map args;
   @override
   Widget build(BuildContext context) {
-    return _HowToMakeNote();
+    return _HowToMakeNote(args: args);
   }
 }
 
 class _HowToMakeNote extends StatelessWidget {
+  _HowToMakeNote({Key key, this.args}) : super(key: key);
+  final Map args;
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context).settings.arguments;
     final maxVersion = args["maxVersion"];
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null
@@ -37,7 +40,7 @@ class _HowToMakeNote extends StatelessWidget {
         }
       },
       child: SingleChildScrollView(
-        reverse: true,
+        reverse: context.select((HowToMakeStore store) => store.getReverseFlag),
         child: Padding(
           padding: EdgeInsets.only(bottom: bottomSpace),
           child: Column(
@@ -54,17 +57,7 @@ class _HowToMakeNote extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: const Text(
-                                "<作り方>",
-                                style: const TextStyle(fontSize: 25.0),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            padding: EdgeInsets.fromLTRB(0, 9, 0, 0),
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Text(
@@ -138,8 +131,10 @@ class _HowToMakeList extends StatelessWidget {
                         ),
                     style: const TextStyle(fontSize: 15.0),
                     maxLines: 5,
-                    onTap: () =>
-                        context.read<VersionStore>().isTextFieldOpenFalse(),
+                    onTap: () => {
+                      context.read<HowToMakeStore>().changeReverseFlagTrue(),
+                      context.read<VersionStore>().isTextFieldOpenFalse(),
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                     ),

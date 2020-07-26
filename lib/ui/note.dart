@@ -51,9 +51,9 @@ class _Note extends StatelessWidget {
 
         // Noteページに表示する子要素のリスト.
         final _pageWidgets = [
+          VersionManagement(snapshot: snapshot, args: args),
           VersionManagement(snapshot: snapshot),
-          VersionManagement(snapshot: snapshot),
-          HowToMakeNote(),
+          HowToMakeNote(args: args),
         ];
 
         return Scaffold(
@@ -120,6 +120,7 @@ class _Note extends StatelessWidget {
             ],
             currentIndex: currentIndex,
             onTap: (int index) {
+              context.read<HowToMakeStore>().changeReverseFlagFalse();
               context.read<VersionStore>().setCurrentIndex(index);
             },
           ),

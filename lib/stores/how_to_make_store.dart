@@ -8,9 +8,11 @@ class HowToMakeStore with ChangeNotifier {
   final _howToMakeRepository = HowToMakeRepository();
 
   // Initialize version.
+  bool isReverse = false;
 
   // Getter method.
   Future<List<HowToMake>> get getAllHowToMakes => fetchHowToMakes();
+  bool get getReverseFlag => isReverse;
 
   // すべての作り方を取得。
   Future<List<HowToMake>> fetchHowToMakes({int recipeId, int versionId}) async {
@@ -20,6 +22,7 @@ class HowToMakeStore with ChangeNotifier {
 
   // 作り方の追加。
   Future<void> createHowToMake(HowToMake item) async {
+    isReverse = true;
     await _howToMakeRepository.createHowToMake(item);
     fetchHowToMakes();
     notifyListeners();
@@ -35,6 +38,18 @@ class HowToMakeStore with ChangeNotifier {
   void updateHowToMake(HowToMake howToMake, String updateDate) async {
     await _howToMakeRepository.updateHowToMake(howToMake, updateDate);
     fetchHowToMakes();
+    notifyListeners();
+  }
+
+  // ReverseFlagをTrueに変更
+  void changeReverseFlagTrue() {
+    isReverse = true;
+    notifyListeners();
+  }
+
+  // ReverseFlagをFalseに変更
+  void changeReverseFlagFalse() {
+    isReverse = false;
     notifyListeners();
   }
 }

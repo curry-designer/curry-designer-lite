@@ -5,20 +5,21 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class VersionManagement extends StatelessWidget {
-  VersionManagement({Key key, this.snapshot}) : super(key: key);
+  VersionManagement({Key key, this.snapshot, this.args}) : super(key: key);
   final AsyncSnapshot<List<Version>> snapshot;
+  final Map args;
   @override
   Widget build(BuildContext context) {
-    return _VersionManagement(snapshot: snapshot);
+    return _VersionManagement(snapshot: snapshot, args: args);
   }
 }
 
 class _VersionManagement extends StatelessWidget {
-  _VersionManagement({Key key, this.snapshot}) : super(key: key);
+  _VersionManagement({Key key, this.snapshot, this.args}) : super(key: key);
   final AsyncSnapshot<List<Version>> snapshot;
+  final Map args;
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context).settings.arguments;
     final maxVersion = args["maxVersion"];
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null

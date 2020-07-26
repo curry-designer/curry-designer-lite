@@ -25,7 +25,9 @@ class Note extends StatelessWidget {
 class _Note extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context).settings.arguments;
+    context.select((VersionStore store) =>
+        store.setArgs(ModalRoute.of(context).settings.arguments));
+    final Map args = context.select((VersionStore store) => store.getArgs);
     final id = args["id"];
     final recipeName = args["recipeName"];
     final maxVersion = args["maxVersion"];
@@ -51,9 +53,9 @@ class _Note extends StatelessWidget {
 
         // Noteページに表示する子要素のリスト.
         final _pageWidgets = [
-          VersionManagement(snapshot: snapshot, args: args),
           VersionManagement(snapshot: snapshot),
-          HowToMakeNote(args: args),
+          VersionManagement(snapshot: snapshot),
+          HowToMakeNote(),
         ];
 
         return Scaffold(

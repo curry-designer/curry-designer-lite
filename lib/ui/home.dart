@@ -55,38 +55,42 @@ class _Home extends StatelessWidget {
             currentFocus.unfocus();
           }
         },
-        child: Container(
-          padding: EdgeInsets.only(bottom: bottomSpace),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 17, 10, 2),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "レシピ一覧",
-                      style: TextStyle(fontSize: 20.0),
+        child: Align(
+          alignment: Alignment.center,
+          child: Container(
+            padding: EdgeInsets.only(bottom: bottomSpace),
+            width: MediaQuery.of(context).size.width * 0.90,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(top: 17),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "レシピ一覧",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                    )),
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+//                width: MediaQuery.of(context).size.width * 0.90,
+                  child: TextField(
+                    onChanged: (value) => {
+                      context.read<RecipeStore>().setSearchResult(value),
+                    },
+                    decoration: new InputDecoration(
+                      prefixIcon: new Icon(Icons.search),
+                      hintText: 'Search...',
+                      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      border: OutlineInputBorder(),
                     ),
-                  )),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                width: MediaQuery.of(context).size.width * 0.90,
-                child: TextField(
-                  onChanged: (value) => {
-                    context.read<RecipeStore>().setSearchResult(value),
-                  },
-                  decoration: new InputDecoration(
-                    prefixIcon: new Icon(Icons.search),
-                    hintText: 'Search...',
-                    contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    border: OutlineInputBorder(),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ShowCurryItemList(),
-              )
-            ],
+                Expanded(
+                  child: ShowCurryItemList(),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -126,7 +130,7 @@ class ShowCurryItemList extends StatelessWidget {
           );
         } else {
           return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(top: 16.0),
             itemBuilder: (context, i) {
               final item = snapshot.data[i];
               return Slidable(

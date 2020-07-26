@@ -7,19 +7,16 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class HowToMakeNote extends StatelessWidget {
-  HowToMakeNote({Key key, this.args}) : super(key: key);
-  final Map args;
   @override
   Widget build(BuildContext context) {
-    return _HowToMakeNote(args: args);
+    return _HowToMakeNote();
   }
 }
 
 class _HowToMakeNote extends StatelessWidget {
-  _HowToMakeNote({Key key, this.args}) : super(key: key);
-  final Map args;
   @override
   Widget build(BuildContext context) {
+    final Map args = context.select((VersionStore store) => store.getArgs);
     final maxVersion = args["maxVersion"];
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null

@@ -55,5 +55,12 @@ class DatabaseProvider {
         "comment TEXT,"
         "PRIMARY KEY (id, recipe_id)"
         ")");
+    await database.execute("CREATE TABLE HowToMake ("
+        "id INTEGER,"
+        "recipe_id INTEGER,"
+        "version_id INTEGER,"
+        "how_to_make TEXT,"
+        "PRIMARY KEY (id, recipe_id, version_id)"
+        ")");
   }
 }

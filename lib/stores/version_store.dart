@@ -13,6 +13,8 @@ class VersionStore with ChangeNotifier {
   int _starCount;
   String _comment;
   bool _isTextFieldOpen = true;
+  int _currentIndex = 0;
+  Map _args;
 
   // Getter method.
   Future<List<Version>> get getAllVersions => fetchVersions();
@@ -21,6 +23,8 @@ class VersionStore with ChangeNotifier {
   int get getStarCount => _starCount;
   String get getComment => _comment;
   bool get isTextFieldOpen => _isTextFieldOpen;
+  int get getCurrentIndex => _currentIndex;
+  Map get getArgs => _args;
 
   // Fetch all curry recipes.
   Future<List<Version>> fetchVersions({int recipeId}) async {
@@ -81,5 +85,14 @@ class VersionStore with ChangeNotifier {
   void isTextFieldOpenFalse() {
     _isTextFieldOpen = false;
     notifyListeners();
+  }
+
+  void setCurrentIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
+  }
+
+  void setArgs(Map args) {
+    _args = args;
   }
 }

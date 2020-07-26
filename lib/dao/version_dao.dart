@@ -11,13 +11,13 @@ class VersionDao {
     var latestVersion = await db.rawQuery(
         "SELECT MAX(v.id) as id FROM Version v WHERE v.recipe_id = ? GROUP BY v.recipe_id",
         [version.getRecipeId]);
-    List<Version> recipes = latestVersion.isNotEmpty
+    List<Version> versions = latestVersion.isNotEmpty
         ? latestVersion.map((item) => Version.fromDatabaseJson(item)).toList()
         : [];
 
-    if (recipes.isEmpty) {
+    if (versions.isEmpty) {
       var result = db.rawInsert(
-          "INSERT Into Version (id,recipe_id,update_date,star_count,comment)"
+          "INSERT INTO Version (id,recipe_id,update_date,star_count,comment)"
           " VALUES (?,?,?,?,?)",
           [
             1,
@@ -26,17 +26,33 @@ class VersionDao {
             version.getStarCount,
             version.getComment,
           ]);
+      db.rawInsert(
+          "INSERT INTO HowToMake (id,recipe_id,version_id,how_to_make)"
+          " VALUES (?,?,?,?)",
+          [
+            1,
+            version.getRecipeId,
+            1,
+            null,
+          ]);
       return result;
     } else {
       var result = db.rawInsert(
-          "INSERT Into Version (id,recipe_id,update_date,star_count,comment)"
+          "INSERT INTO Version (id,recipe_id,update_date,star_count,comment)"
           " VALUES (?,?,?,?,?)",
           [
-            recipes[0].getId + 1,
+            versions[0].getId + 1,
             version.getRecipeId,
             version.getLatestUpdateDate,
             version.getStarCount,
             version.getComment,
+          ]);
+      db.rawInsert(
+          "INSERT INTO HowToMake (id,recipe_id,version_id,how_to_make)"
+          " SELECT h.id, h.recipe_id, h.version_id + 1, h.how_to_make FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?",
+          [
+            version.getRecipeId,
+            versions[0].getId,
           ]);
       return result;
     }

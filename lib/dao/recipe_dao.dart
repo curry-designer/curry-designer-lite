@@ -9,7 +9,7 @@ class RecipeDao {
   Future<int> createRecipe(Recipe recipe) async {
     final db = await dbProvider.database;
     var result = db.rawInsert(
-        "INSERT Into Recipe (id,name)"
+        "INSERT INTO Recipe (id,name)"
         " VALUES (?,?)",
         [
           null,

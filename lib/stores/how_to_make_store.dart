@@ -52,4 +52,11 @@ class HowToMakeStore with ChangeNotifier {
     isReverse = false;
     notifyListeners();
   }
+
+  //
+  void insertNewIndex(
+      int newIndex, HowToMake howToMake, List<HowToMake> howToMakeList) {
+    howToMakeList.insert(newIndex, howToMake);
+    notifyListeners();
+  }
 }

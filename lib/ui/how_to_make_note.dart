@@ -38,42 +38,9 @@ class _HowToMakeNote extends StatelessWidget {
       },
       child: SingleChildScrollView(
         reverse: context.select((HowToMakeStore store) => store.getReverseFlag),
-        child: Padding(
-          padding: EdgeInsets.only(bottom: bottomSpace),
-          child: Column(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  padding: EdgeInsets.only(top: 10.0),
-                  width: MediaQuery.of(context).size.width * 0.88,
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        // 作り方とVersionを両端に寄せる。
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                  "Version: " + currentVersion.toString(),
-                                  style: const TextStyle(fontSize: 25.0)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _HowToMakeList(
-                          recipeId: versionMap[currentVersion].getRecipeId,
-                          versionId: currentVersion),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: _HowToMakeList(
+            recipeId: versionMap[currentVersion].getRecipeId,
+            versionId: currentVersion),
       ),
     );
   }
@@ -90,57 +57,53 @@ class _HowToMakeList extends StatelessWidget {
       future: context.select((HowToMakeStore store) =>
           store.fetchHowToMakes(recipeId: recipeId, versionId: versionId)),
       builder: (context, AsyncSnapshot<List<HowToMake>> snapshot) {
+        List<HowToMake> howToMakeList = snapshot.data;
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
         }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, i) {
-            final item = snapshot.data[i];
-            return Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "作り方" + item.getOrderHowToMake.toString(),
-                      style: const TextStyle(fontSize: 15.0),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(0.0),
-                  child: TextFormField(
-                    key: Key(item.getOrderHowToMake.toString()),
-                    initialValue: item.getHowToMake,
-                    onChanged: (value) => context
-                        .read<HowToMakeStore>()
-                        .updateHowToMake(
-                          new HowToMake(
-                            howToMake: value,
-                            id: item.getId,
-                            recipeId: item.getRecipeId,
-                            versionId: item.getVersionId,
+        return Container(
+          height: (howToMakeList.length * 300).toDouble(),
+          child: ReorderableListView(
+            padding: EdgeInsets.all(10.0),
+            onReorder: (oldIndex, newIndex) {
+              if (oldIndex < newIndex) {
+                // removing the item at oldIndex will shorten the list by 1.
+                newIndex -= 1;
+              }
+              final HowToMake howToMake = howToMakeList.removeAt(oldIndex);
+
+              context
+                  .read<HowToMakeStore>()
+                  .insertNewIndex(newIndex, howToMake, howToMakeList);
+            },
+            children: howToMakeList.map(
+              (HowToMake howToMake) {
+                return TextFormField(
+                  key: Key(howToMake.getOrderHowToMake.toString()),
+                  initialValue: howToMake.getHowToMake,
+                  onChanged: (value) =>
+                      context.read<HowToMakeStore>().updateHowToMake(
+                            new HowToMake(
+                              howToMake: value,
+                              id: howToMake.getId,
+                              recipeId: howToMake.getRecipeId,
+                              versionId: howToMake.getVersionId,
+                            ),
+                            DateFormat("yyyy.MM.dd").format(new DateTime.now()),
                           ),
-                          DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-                        ),
-                    style: const TextStyle(fontSize: 15.0),
-                    maxLines: 5,
-                    onTap: () => {
-                      context.read<HowToMakeStore>().changeReverseFlagTrue(),
-                      context.read<VersionStore>().isTextFieldOpenFalse(),
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
+                  style: const TextStyle(fontSize: 15.0),
+                  maxLines: 5,
+                  onTap: () => {
+                    context.read<HowToMakeStore>().changeReverseFlagTrue(),
+                    context.read<VersionStore>().isTextFieldOpenFalse(),
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
                   ),
-                ),
-              ],
-            );
-          },
-          itemCount: snapshot.data.length,
+                );
+              },
+            ).toList(),
+          ),
         );
       },
     );

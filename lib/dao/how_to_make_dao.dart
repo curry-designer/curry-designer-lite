@@ -52,7 +52,7 @@ class HowToMakeDao {
     List<Map<String, dynamic>> result;
     if (recipeId != null && versionId != null) {
       result = await db.rawQuery(
-          'SELECT h.id, h.recipe_id, h.version_id, RANK () OVER (ORDER BY h.id) as order_how_to_make , h.how_to_make  FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?',
+          'SELECT h.id, h.recipe_id, h.version_id, h.id as order_how_to_make , h.how_to_make  FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?',
           [recipeId, versionId]);
     } else {
       result = await db.rawQuery('SELECT * FROM HowToMake');

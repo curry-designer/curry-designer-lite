@@ -5,6 +5,7 @@ import 'package:currydesignerlite/stores/how_to_make_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class HowToMakeNote extends StatelessWidget {
   @override
@@ -25,8 +26,10 @@ class _HowToMakeNote extends StatelessWidget {
     final versionMap =
         context.select((VersionStore store) => store.getMapVersions);
 
+    // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
     FocusScopeNode currentFocus = FocusScope.of(context);
 
+    // 入力キーボードを使用の際に全体のBottomをあげる。入力キーボードでフォームが隠れてしまうため。
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
 
     return GestureDetector(
@@ -110,31 +113,69 @@ class _HowToMakeList extends StatelessWidget {
                     ),
                   ),
                 ),
+//                Container(
+//                  margin: const EdgeInsets.all(0.0),
+//                  child: TextFormField(
+//                    key: Key(item.getOrderHowToMake.toString()),
+//                    initialValue: item.getHowToMake,
+//                    onChanged: (value) => context
+//                        .read<HowToMakeStore>()
+//                        .updateHowToMake(
+//                          new HowToMake(
+//                            howToMake: value,
+//                            id: item.getId,
+//                            recipeId: item.getRecipeId,
+//                            versionId: item.getVersionId,
+//                          ),
+//                          DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+//                        ),
+//                    style: const TextStyle(fontSize: 15.0),
+//                    maxLines: 5,
+//                    onTap: () => {
+//                      context.read<HowToMakeStore>().changeReverseFlagTrue(),
+//                      context.read<VersionStore>().isTextFieldOpenFalse(),
+//                    },
+//                    decoration: const InputDecoration(
+//                      border: OutlineInputBorder(),
+//                    ),
+//                  ),
+//                ),
                 Container(
-                  margin: const EdgeInsets.all(0.0),
-                  child: TextFormField(
-                    key: Key(item.getOrderHowToMake.toString()),
-                    initialValue: item.getHowToMake,
-                    onChanged: (value) => context
-                        .read<HowToMakeStore>()
-                        .updateHowToMake(
-                          new HowToMake(
-                            howToMake: value,
-                            id: item.getId,
-                            recipeId: item.getRecipeId,
-                            versionId: item.getVersionId,
-                          ),
-                          DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-                        ),
-                    style: const TextStyle(fontSize: 15.0),
-                    maxLines: 5,
-                    onTap: () => {
-                      context.read<HowToMakeStore>().changeReverseFlagTrue(),
-                      context.read<VersionStore>().isTextFieldOpenFalse(),
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                  child: Slidable(
+                    key: Key(item.getId.toString()),
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: Container(
+                      color: Colors.white,
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, '/how_to_make_note_detail',
+                                arguments: {
+                                  "id": item.id,
+                                  "recipeId": item.getRecipeId,
+                                  "versionId": item.getVersionId,
+                                  "orderHowToMake": item.getOrderHowToMake,
+                                  "howToMake": item.getHowToMake
+                                });
+                          },
+                          child: Card(
+                            child: ListTile(
+                              title: Text(
+                                item.getHowToMake,
+                                style: TextStyle(fontSize: 15.0),
+                              ),
+                            ),
+                          )),
                     ),
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+//                        onTap: () => _showDialog(i, snapshot.data[i], context),
+                      ),
+                    ],
                   ),
                 ),
               ],

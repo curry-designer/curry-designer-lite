@@ -1,3 +1,4 @@
+import 'package:currydesignerlite/stores/how_to_make_store.dart';
 import 'package:currydesignerlite/stores/recipe_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,9 @@ class Home extends StatelessWidget {
       ),
       ChangeNotifierProvider<VersionStore>(
         create: (context) => VersionStore(),
+      ),
+      ChangeNotifierProvider<HowToMakeStore>(
+        create: (context) => HowToMakeStore(),
       )
     ], child: _Home()); // This tra
   }
@@ -212,6 +216,7 @@ class ShowCurryItemList extends StatelessWidget {
   void _deleteRecipe(Recipe item, BuildContext context) => {
         context.read<RecipeStore>().deleteRecipe(item.id),
         context.read<VersionStore>().deleteVersionByRecipeId(item.id),
+        context.read<HowToMakeStore>().deleteHowToMakeByRecipeId(item.id),
         Navigator.pop(context)
       };
 }

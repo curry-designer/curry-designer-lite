@@ -25,36 +25,51 @@ class _RegisterRecipeForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<RecipeStore>(context);
-    context.select((RecipeStore store) => store.fetchRecipes);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('レシピの登録'),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(50.0),
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                maxLength: 100,
-                decoration: const InputDecoration(
-                  hintText: 'バターチキンカレー etc...',
-                  labelText: 'レシピ名',
-                ),
-                validator: (String value) {
-                  return value.isEmpty ? 'レシピ名を入力してください。' : null;
-                },
-                onChanged: (String value) {
-                  context.read<RecipeStore>().registerCurryRecipeName(value);
-                },
+    // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    return GestureDetector(
+      // 入力キーボードをどこを押しても閉じれるようにする。
+      onTap: () {
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('レシピの登録'),
+        ),
+        body: Form(
+          key: _formKey,
+          child: Container(
+            padding: const EdgeInsets.all(50.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    maxLength: 100,
+                    decoration: const InputDecoration(
+                      hintText: 'バターチキンカレー etc...',
+                      labelText: 'レシピ名',
+                    ),
+                    validator: (String value) {
+                      return value.isEmpty ? 'レシピ名を入力してください。' : null;
+                    },
+                    onChanged: (String value) {
+                      context
+                          .read<RecipeStore>()
+                          .registerCurryRecipeName(value);
+                    },
+                  ),
+                  RaisedButton(
+                    onPressed: () => _register(
+                        context.read<RecipeStore>().getCurryRecipeName,
+                        context),
+                    child: Text('登録'),
+                  ),
+                ],
               ),
-              RaisedButton(
-                onPressed: () => _register(bloc.getCurryRecipeName, context),
-                child: Text('登録'),
-              ),
-            ],
+            ),
           ),
         ),
       ),

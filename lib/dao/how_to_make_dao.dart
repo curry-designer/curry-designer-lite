@@ -14,31 +14,42 @@ class HowToMakeDao {
           howToMake.getRecipeId,
           howToMake.getVersionId,
         ]);
+    var count = await db.rawQuery(
+        "SELECT MAX(h.order_how_to_make) as order_how_to_make FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ? GROUP BY h.recipe_id, h.version_id ",
+        [
+          howToMake.getRecipeId,
+          howToMake.getVersionId,
+        ]);
     List<HowToMake> howToMakes = latestHowToMake.isNotEmpty
         ? latestHowToMake
             .map((item) => HowToMake.fromDatabaseJson(item))
             .toList()
         : [];
+    List<HowToMake> howToMakesOrder = latestHowToMake.isNotEmpty
+        ? count.map((item) => HowToMake.fromDatabaseJson(item)).toList()
+        : [];
 
     if (howToMakes.isEmpty) {
       var result = db.rawInsert(
-          "INSERT Into HowToMake (id,recipe_id,version_id,how_to_make)"
-          " VALUES (?,?,?,?)",
+          "INSERT Into HowToMake (id,recipe_id,version_id,order_how_to_make,how_to_make)"
+          " VALUES (?,?,?,?,?)",
           [
             1,
             howToMake.getRecipeId,
             howToMake.getVersionId,
+            1,
             howToMake.getHowToMake,
           ]);
       return result;
     } else {
       var result = db.rawInsert(
-          "INSERT Into HowToMake (id,recipe_id,version_id,how_to_make)"
-          " VALUES (?,?,?,?)",
+          "INSERT Into HowToMake (id,recipe_id,version_id,order_how_to_make,how_to_make)"
+          " VALUES (?,?,?,?,?)",
           [
             howToMakes[0].getId + 1,
             howToMake.getRecipeId,
             howToMake.getVersionId,
+            howToMakesOrder[0].getOrderHowToMake + 1,
             howToMake.getHowToMake,
           ]);
       return result;
@@ -52,7 +63,7 @@ class HowToMakeDao {
     List<Map<String, dynamic>> result;
     if (recipeId != null && versionId != null) {
       result = await db.rawQuery(
-          'SELECT h.id, h.recipe_id, h.version_id, RANK () OVER (ORDER BY h.id) as order_how_to_make , h.how_to_make  FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?',
+          'SELECT h.id, h.recipe_id, h.version_id, h.order_how_to_make, h.how_to_make  FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?',
           [recipeId, versionId]);
     } else {
       result = await db.rawQuery('SELECT * FROM HowToMake');

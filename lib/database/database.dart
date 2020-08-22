@@ -59,6 +59,7 @@ class DatabaseProvider {
         "id INTEGER,"
         "recipe_id INTEGER,"
         "version_id INTEGER,"
+        "order_how_to_make INTEGER,"
         "how_to_make TEXT,"
         "PRIMARY KEY (id, recipe_id, version_id)"
         ")");

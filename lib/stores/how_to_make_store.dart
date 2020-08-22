@@ -28,10 +28,11 @@ class HowToMakeStore with ChangeNotifier {
     notifyListeners();
   }
 
-  // Delete version by recipe id.
+  // レシピに基づく作り方の削除
   void deleteHowToMakeByRecipeId(int recipeId) async {
     await _howToMakeRepository.deleteHowToMakeByRecipeId(recipeId);
     fetchHowToMakes();
+    notifyListeners();
   }
 
   // 作り方の更新。

@@ -149,6 +149,7 @@ class _Note extends StatelessWidget {
             context.read<HowToMakeStore>().createHowToMake(HowToMake(
                   recipeId: version.getRecipeId,
                   versionId: version.getId,
+                  howToMake: "",
                 ))
           },
           icon: const Icon(Icons.add),

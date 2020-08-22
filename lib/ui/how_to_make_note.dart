@@ -113,33 +113,6 @@ class _HowToMakeList extends StatelessWidget {
                     ),
                   ),
                 ),
-//                Container(
-//                  margin: const EdgeInsets.all(0.0),
-//                  child: TextFormField(
-//                    key: Key(item.getOrderHowToMake.toString()),
-//                    initialValue: item.getHowToMake,
-//                    onChanged: (value) => context
-//                        .read<HowToMakeStore>()
-//                        .updateHowToMake(
-//                          new HowToMake(
-//                            howToMake: value,
-//                            id: item.getId,
-//                            recipeId: item.getRecipeId,
-//                            versionId: item.getVersionId,
-//                          ),
-//                          DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-//                        ),
-//                    style: const TextStyle(fontSize: 15.0),
-//                    maxLines: 5,
-//                    onTap: () => {
-//                      context.read<HowToMakeStore>().changeReverseFlagTrue(),
-//                      context.read<VersionStore>().isTextFieldOpenFalse(),
-//                    },
-//                    decoration: const InputDecoration(
-//                      border: OutlineInputBorder(),
-//                    ),
-//                  ),
-//                ),
                 Container(
                   child: Slidable(
                     key: Key(item.getId.toString()),
@@ -173,7 +146,7 @@ class _HowToMakeList extends StatelessWidget {
                         caption: 'Delete',
                         color: Colors.red,
                         icon: Icons.delete,
-//                        onTap: () => _showDialog(i, snapshot.data[i], context),
+                        onTap: () => _showDialog(i, item, context),
                       ),
                     ],
                   ),
@@ -186,4 +159,39 @@ class _HowToMakeList extends StatelessWidget {
       },
     );
   }
+
+  void _showDialog(int i, HowToMake item, BuildContext context) => {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text('削除'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                        '作り方' + item.getOrderHowToMake.toString() + 'を削除しますか？'),
+                  ],
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("CANCEL"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  FlatButton(
+                      child: Text("OK"),
+                      onPressed: () => _deleteRecipe(item, context))
+                ],
+              );
+            })
+      };
+
+  void _deleteRecipe(HowToMake item, BuildContext context) async => {
+        await context
+            .read<HowToMakeStore>()
+            .deleteHowToMake(item.id, item.getRecipeId, item.getVersionId),
+        await context.read<HowToMakeStore>().updateOrderHowToMake(
+            item, DateFormat("yyyy.MM.dd").format(new DateTime.now())),
+        Navigator.pop(context)
+      };
 }

@@ -172,7 +172,7 @@ class ShowCurryItemList extends StatelessWidget {
                     caption: 'Delete',
                     color: Colors.red,
                     icon: Icons.delete,
-                    onTap: () => _showDialog(i, snapshot.data[i], context),
+                    onTap: () => _showDialog(i, item, context),
                   ),
                 ],
               );

@@ -75,10 +75,12 @@ class HowToMakeDao {
     return howToMakes;
   }
 
-  // Idに紐づく作り方の削除。
-  Future<int> deleteHowToMake(int id) async {
+  // 作り方の1行を削除。
+  Future<int> deleteHowToMake(int id, int recipeId, int versionId) async {
     final db = await dbProvider.database;
-    var result = await db.rawDelete('DELETE FROM HowToMake WHERE id = ?', [id]);
+    var result = await db.rawDelete(
+        'DELETE FROM HowToMake WHERE id = ? AND recipe_id = ? AND version_id = ? ',
+        [id, recipeId, versionId]);
 
     return result;
   }
@@ -92,7 +94,7 @@ class HowToMakeDao {
     return result;
   }
 
-  // 作り方の更新(UPDATE文)。　Versionの更新日の更新も同時に行う。
+  // 作り方の更新(UPDATE文)。Versionの更新日の更新も同時に行う。
   Future<int> updateHowToMake(HowToMake howToMake, String updateDate) async {
     final db = await dbProvider.database;
     var result = await db.rawUpdate(
@@ -102,6 +104,25 @@ class HowToMakeDao {
           howToMake.getId,
           howToMake.getRecipeId,
           howToMake.getVersionId,
+        ]);
+    await db.rawUpdate(
+        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
+      updateDate,
+      howToMake.getVersionId,
+      howToMake.getRecipeId,
+    ]);
+
+    return result;
+  }
+
+  // 作り方の順序の更新(UPDATE文)。Versionの更新日の更新も同時に行う。
+  Future<int> updateOrderHowToMake(
+      HowToMake howToMake, String updateDate) async {
+    final db = await dbProvider.database;
+    var result = await db.rawUpdate(
+        'UPDATE HowToMake SET order_how_to_make = order_how_to_make - 1 WHERE order_how_to_make > ?',
+        [
+          howToMake.getOrderHowToMake,
         ]);
     await db.rawUpdate(
         'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [

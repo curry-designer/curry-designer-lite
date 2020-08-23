@@ -1,36 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-
-
-class TextWidget extends StatefulWidget {
-  TextWidget({Key key, this.title}) : super(key: key);
-  final String title;
-
+class MaterialNoteWidget extends StatelessWidget {
   @override
-  _TextWidgetState createState() => _TextWidgetState();
+  Widget build(BuildContext context) {
+    return _MaterialNoteWidget();
+  }
 }
 
-class _TextWidgetState extends State<TextWidget>{
+class _MaterialNoteWidget extends StatelessWidget {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('材料'),
-      ),
-
-      body: ListView(
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: '材料をメモ',
+        appBar: AppBar(
+          title: Text('材料'),
+        ),
+        body: ListView(
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: '材料をメモ',
+              ),
+              maxLines: 20,
             ),
-
-            maxLines: 20,
-          ),
-        ],
-      )
-    );
+          ],
+        ));
   }
 }

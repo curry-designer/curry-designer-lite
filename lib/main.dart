@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ui/home.dart';
 import 'ui/register_recipe_form.dart';
-import 'ui/material_note.dart';
 import 'ui/note.dart';
 
 void main() {
@@ -26,7 +25,6 @@ class MyApp extends StatelessWidget {
         '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
         '/note': (BuildContext context) => Note(),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
-        '/material-note': (BuildContext context) => TextWidget(),
       },
     );
   }

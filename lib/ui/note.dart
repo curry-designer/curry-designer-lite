@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'version_management.dart';
+import 'material_note.dart';
 import 'how_to_make_note.dart';
 
 class Note extends StatelessWidget {
@@ -54,7 +55,7 @@ class _Note extends StatelessWidget {
         // Noteページに表示する子要素のリスト.
         final _pageWidgets = [
           VersionManagement(snapshot: snapshot),
-          VersionManagement(snapshot: snapshot),
+          MaterialNoteWidget(),
           HowToMakeNote(),
         ];
 

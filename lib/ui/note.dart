@@ -111,7 +111,7 @@ class _Note extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: const Icon(
-                  const IconData(0xe800, fontFamily: 'Knife'),
+                  const IconData(0xe801, fontFamily: 'HowToMake'),
                   size: 40,
                 ),
                 title: Text(
@@ -149,6 +149,7 @@ class _Note extends StatelessWidget {
             context.read<HowToMakeStore>().createHowToMake(HowToMake(
                   recipeId: version.getRecipeId,
                   versionId: version.getId,
+                  howToMake: "",
                 ))
           },
           icon: const Icon(Icons.add),

@@ -27,13 +27,14 @@ class VersionDao {
             version.getComment,
           ]);
       db.rawInsert(
-          "INSERT INTO HowToMake (id,recipe_id,version_id,how_to_make)"
-          " VALUES (?,?,?,?)",
+          "INSERT INTO HowToMake (id,recipe_id,version_id,order_how_to_make,how_to_make)"
+          " VALUES (?,?,?,?,?)",
           [
             1,
             version.getRecipeId,
             1,
-            null,
+            1,
+            "",
           ]);
       return result;
     } else {
@@ -48,8 +49,8 @@ class VersionDao {
             version.getComment,
           ]);
       db.rawInsert(
-          "INSERT INTO HowToMake (id,recipe_id,version_id,how_to_make)"
-          " SELECT h.id, h.recipe_id, h.version_id + 1, h.how_to_make FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?",
+          "INSERT INTO HowToMake (id,recipe_id,version_id,order_how_to_make,how_to_make)"
+          " SELECT h.id, h.recipe_id, h.version_id + 1, h.order_how_to_make, h.how_to_make FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?",
           [
             version.getRecipeId,
             versions[0].getId,

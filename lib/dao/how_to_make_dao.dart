@@ -63,7 +63,17 @@ class HowToMakeDao {
     List<Map<String, dynamic>> result;
     if (recipeId != null && versionId != null) {
       result = await db.rawQuery(
-          'SELECT h.id, h.recipe_id, h.version_id, h.order_how_to_make, h.how_to_make  FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?',
+          'SELECT '
+          'h.id, '
+          'h.recipe_id, '
+          'h.version_id,'
+          ' h.order_how_to_make, '
+          'h.how_to_make  '
+          'FROM HowToMake h '
+          'WHERE '
+          'h.recipe_id = ? '
+          'AND h.version_id = ? '
+          'ORDER BY h.order_how_to_make',
           [recipeId, versionId]);
     } else {
       result = await db.rawQuery('SELECT * FROM HowToMake');
@@ -123,6 +133,68 @@ class HowToMakeDao {
         'UPDATE HowToMake SET order_how_to_make = order_how_to_make - 1 WHERE order_how_to_make > ?',
         [
           howToMake.getOrderHowToMake,
+        ]);
+    await db.rawUpdate(
+        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
+      updateDate,
+      howToMake.getVersionId,
+      howToMake.getRecipeId,
+    ]);
+
+    return result;
+  }
+
+  // 作り方の順序を1つ繰り上げて入れ替え更新(UPDATE文)。Versionの更新日の更新も同時に行う。
+  Future<int> updateOrderHowToMakeUp(
+      HowToMake howToMake, String updateDate) async {
+    final db = await dbProvider.database;
+    var result = await db.rawUpdate(
+        'UPDATE HowToMake SET order_how_to_make = '
+        'CASE '
+        'WHEN '
+        'order_how_to_make = ? '
+        'THEN '
+        'order_how_to_make - 1 '
+        'WHEN '
+        'order_how_to_make = ? '
+        'THEN '
+        'order_how_to_make + 1  '
+        'ELSE order_how_to_make '
+        'END',
+        [
+          howToMake.getOrderHowToMake,
+          howToMake.getOrderHowToMake - 1,
+        ]);
+    await db.rawUpdate(
+        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
+      updateDate,
+      howToMake.getVersionId,
+      howToMake.getRecipeId,
+    ]);
+
+    return result;
+  }
+
+  // 作り方の順序を1つ繰り下げて入れ替え(UPDATE文)。Versionの更新日の更新も同時に行う。
+  Future<int> updateOrderHowToMakeDown(
+      HowToMake howToMake, String updateDate) async {
+    final db = await dbProvider.database;
+    var result = await db.rawUpdate(
+        'UPDATE HowToMake SET order_how_to_make = '
+        'CASE '
+        'WHEN '
+        'order_how_to_make = ? '
+        'THEN '
+        'order_how_to_make + 1 '
+        'WHEN '
+        'order_how_to_make = ? '
+        'THEN '
+        'order_how_to_make - 1  '
+        'ELSE order_how_to_make '
+        'END',
+        [
+          howToMake.getOrderHowToMake,
+          howToMake.getOrderHowToMake + 1,
         ]);
     await db.rawUpdate(
         'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [

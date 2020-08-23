@@ -57,6 +57,22 @@ class HowToMakeStore with ChangeNotifier {
     notifyListeners();
   }
 
+  // 作り方の順序を1つ繰り上げて更新
+  Future<void> updateOrderHowToMakeUp(
+      HowToMake howToMake, String updateDate) async {
+    await _howToMakeRepository.updateOrderHowToMakeUp(howToMake, updateDate);
+    fetchHowToMakes();
+    notifyListeners();
+  }
+
+  // 作り方の順序を1つ繰り下げて更新
+  Future<void> updateOrderHowToMakeDown(
+      HowToMake howToMake, String updateDate) async {
+    await _howToMakeRepository.updateOrderHowToMakeDown(howToMake, updateDate);
+    fetchHowToMakes();
+    notifyListeners();
+  }
+
   // ReverseFlagをTrueに変更
   void changeReverseFlagTrue() {
     isReverse = true;

@@ -20,4 +20,10 @@ class HowToMakeRepository {
 
   Future updateOrderHowToMake(HowToMake item, String updateDate) =>
       howToMakeDao.updateOrderHowToMake(item, updateDate);
+
+  Future updateOrderHowToMakeUp(HowToMake item, String updateDate) =>
+      howToMakeDao.updateOrderHowToMakeUp(item, updateDate);
+
+  Future updateOrderHowToMakeDown(HowToMake item, String updateDate) =>
+      howToMakeDao.updateOrderHowToMakeDown(item, updateDate);
 }

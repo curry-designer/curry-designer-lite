@@ -105,12 +105,55 @@ class _HowToMakeList extends StatelessWidget {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "作り方" + item.getOrderHowToMake.toString(),
-                      style: const TextStyle(fontSize: 15.0),
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "作り方" + item.getOrderHowToMake.toString(),
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+                      Container(
+                        child: Row(children: <Widget>[
+                          item.getOrderHowToMake != snapshot.data.length
+                              ? Container(
+                                  child: IconButton(
+                                    icon: Icon(const IconData(0xe801,
+                                        fontFamily: 'Down')),
+                                    color: Colors.amber,
+                                    onPressed: () {
+                                      context
+                                          .read<HowToMakeStore>()
+                                          .updateOrderHowToMakeDown(
+                                              item,
+                                              DateFormat("yyyy.MM.dd")
+                                                  .format(new DateTime.now()));
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          item.getOrderHowToMake != 1
+                              ? Container(
+                                  child: IconButton(
+                                    icon: Icon(const IconData(0xe802,
+                                        fontFamily: 'Up')),
+                                    color: Colors.amber,
+                                    onPressed: () {
+                                      context
+                                          .read<HowToMakeStore>()
+                                          .updateOrderHowToMakeUp(
+                                              item,
+                                              DateFormat("yyyy.MM.dd")
+                                                  .format(new DateTime.now()));
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                        ]),
+                      ),
+                    ],
                   ),
                 ),
                 Container(

@@ -97,3 +97,6 @@ flutter:
     - family: Down
       fonts:
         - asset: assets/fonts/Down.ttf
+    - family: HowToMake
+      fonts:
+        - asset: assets/fonts/HowToMake.ttf

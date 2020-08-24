@@ -13,6 +13,7 @@ class Recipe {
       this.starCount,
       this.maxVersion});
 
+  // Getter.
   String get getName => name;
   String get getLatestUpdateDate => latestUpdateDate;
   int get getId => id;

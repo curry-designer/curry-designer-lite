@@ -100,3 +100,6 @@ flutter:
     - family: HowToMake
       fonts:
         - asset: assets/fonts/HowToMake.ttf
+    - family: History
+      fonts:
+        - asset: assets/fonts/History.ttf

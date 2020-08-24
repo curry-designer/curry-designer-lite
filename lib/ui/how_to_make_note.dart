@@ -26,57 +26,33 @@ class _HowToMakeNote extends StatelessWidget {
     final versionMap =
         context.select((VersionStore store) => store.getMapVersions);
 
-    // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
-    FocusScopeNode currentFocus = FocusScope.of(context);
-
-    // 入力キーボードを使用の際に全体のBottomをあげる。入力キーボードでフォームが隠れてしまうため。
-    final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
-
-    return GestureDetector(
-      // Keyboard is closed when tapping anywhere.
-      onTap: () {
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-      child: SingleChildScrollView(
-        reverse: context.select((HowToMakeStore store) => store.getReverseFlag),
-        child: Padding(
-          padding: EdgeInsets.only(bottom: bottomSpace),
-          child: Column(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  padding: EdgeInsets.only(top: 10.0),
-                  width: MediaQuery.of(context).size.width * 0.88,
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        // 作り方とVersionを両端に寄せる。
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 9, 0, 0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                  "Version: " + currentVersion.toString(),
-                                  style: const TextStyle(fontSize: 25.0)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _HowToMakeList(
-                          recipeId: versionMap[currentVersion].getRecipeId,
-                          versionId: currentVersion),
-                    ],
+    return SingleChildScrollView(
+      reverse: context.select((HowToMakeStore store) => store.getReverseFlag),
+      child: Column(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: EdgeInsets.only(top: 10.0),
+              width: MediaQuery.of(context).size.width * 0.88,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text("Version: " + currentVersion.toString(),
+                          style: const TextStyle(fontSize: 25.0)),
+                    ),
                   ),
-                ),
+                  _HowToMakeList(
+                      recipeId: versionMap[currentVersion].getRecipeId,
+                      versionId: currentVersion),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -106,6 +82,7 @@ class _HowToMakeList extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: Row(
+                    // 作り方と順序アイコンを左右に寄せる。
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Align(

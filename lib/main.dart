@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
         '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
         '/note': (BuildContext context) => Note(),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
-        '/material-note': (BuildContext context) => TextWidget(),
         '/how_to_make_note_detail': (BuildContext context) =>
             HowToMakeNoteDetail(),
       },

@@ -13,6 +13,7 @@ class HowToMake {
       this.howToMake,
       this.orderHowToMake});
 
+  // Getter.
   int get getId => id;
   int get getRecipeId => recipeId;
   int get getVersionId => versionId;

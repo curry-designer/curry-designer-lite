@@ -9,6 +9,7 @@ class Version {
   Version(
       {this.id, this.recipeId, this.updateDate, this.starCount, this.comment});
 
+  // Getter.
   int get getRecipeId => recipeId;
   String get getLatestUpdateDate => updateDate;
   int get getId => id;

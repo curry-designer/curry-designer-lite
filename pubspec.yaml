@@ -91,3 +91,15 @@ flutter:
     - family: Curry
       fonts:
         - asset: assets/fonts/Curry.ttf
+    - family: Up
+      fonts:
+        - asset: assets/fonts/Up.ttf
+    - family: Down
+      fonts:
+        - asset: assets/fonts/Down.ttf
+    - family: HowToMake
+      fonts:
+        - asset: assets/fonts/HowToMake.ttf
+    - family: History
+      fonts:
+        - asset: assets/fonts/History.ttf

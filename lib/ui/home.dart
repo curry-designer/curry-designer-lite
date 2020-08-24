@@ -1,3 +1,5 @@
+import 'package:currydesignerlite/stores/curry_material_store.dart';
+import 'package:currydesignerlite/stores/how_to_make_store.dart';
 import 'package:currydesignerlite/stores/recipe_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,12 @@ class Home extends StatelessWidget {
       ),
       ChangeNotifierProvider<VersionStore>(
         create: (context) => VersionStore(),
+      ),
+      ChangeNotifierProvider<HowToMakeStore>(
+        create: (context) => HowToMakeStore(),
+      ),
+      ChangeNotifierProvider<CurryMaterialStore>(
+        create: (context) => CurryMaterialStore(),
       )
     ], child: _Home()); // This tra
   }
@@ -24,7 +32,6 @@ class Home extends StatelessWidget {
 class _Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _filter = new TextEditingController();
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
     FocusScopeNode currentFocus = FocusScope.of(context);
     return Scaffold(
@@ -73,7 +80,6 @@ class _Home extends StatelessWidget {
                     )),
                 Container(
                   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-//                width: MediaQuery.of(context).size.width * 0.90,
                   child: TextField(
                     onChanged: (value) => {
                       context.read<RecipeStore>().setSearchResult(value),
@@ -168,7 +174,7 @@ class ShowCurryItemList extends StatelessWidget {
                     caption: 'Delete',
                     color: Colors.red,
                     icon: Icons.delete,
-                    onTap: () => _showDialog(i, snapshot.data[i], context),
+                    onTap: () => _showDialog(i, item, context),
                   ),
                 ],
               );
@@ -212,6 +218,10 @@ class ShowCurryItemList extends StatelessWidget {
   void _deleteRecipe(Recipe item, BuildContext context) => {
         context.read<RecipeStore>().deleteRecipe(item.id),
         context.read<VersionStore>().deleteVersionByRecipeId(item.id),
+        context.read<HowToMakeStore>().deleteHowToMakeByRecipeId(item.id),
+        context
+            .read<CurryMaterialStore>()
+            .deleteCurryMaterialByRecipeId(item.id),
         Navigator.pop(context)
       };
 }

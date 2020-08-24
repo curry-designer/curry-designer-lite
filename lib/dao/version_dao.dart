@@ -27,13 +27,25 @@ class VersionDao {
             version.getComment,
           ]);
       db.rawInsert(
-          "INSERT INTO HowToMake (id,recipe_id,version_id,how_to_make)"
-          " VALUES (?,?,?,?)",
+          "INSERT Into CurryMaterial (id,recipe_id,version_id,material_name,material_amount,order_material)"
+          " VALUES (?,?,?,?,?,?)",
           [
             1,
             version.getRecipeId,
             1,
-            null,
+            "",
+            "",
+            1,
+          ]);
+      db.rawInsert(
+          "INSERT INTO HowToMake (id,recipe_id,version_id,order_how_to_make,how_to_make)"
+          " VALUES (?,?,?,?,?)",
+          [
+            1,
+            version.getRecipeId,
+            1,
+            1,
+            "",
           ]);
       return result;
     } else {
@@ -48,8 +60,15 @@ class VersionDao {
             version.getComment,
           ]);
       db.rawInsert(
-          "INSERT INTO HowToMake (id,recipe_id,version_id,how_to_make)"
-          " SELECT h.id, h.recipe_id, h.version_id + 1, h.how_to_make FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?",
+          "INSERT INTO HowToMake (id,recipe_id,version_id,order_how_to_make,how_to_make)"
+          " SELECT h.id, h.recipe_id, h.version_id + 1, h.order_how_to_make, h.how_to_make FROM HowToMake h WHERE h.recipe_id = ? AND h.version_id = ?",
+          [
+            version.getRecipeId,
+            versions[0].getId,
+          ]);
+      db.rawInsert(
+          "INSERT INTO CurryMaterial (id,recipe_id,version_id,material_name,material_amount,order_material)"
+          " SELECT m.id, m.recipe_id, m.version_id + 1, m.material_name, m.material_amount, m.order_material FROM CurryMaterial m WHERE m.recipe_id = ? AND m.version_id = ?",
           [
             version.getRecipeId,
             versions[0].getId,

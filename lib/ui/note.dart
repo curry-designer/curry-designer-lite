@@ -1,5 +1,7 @@
+import 'package:currydesignerlite/models/curry_material.dart';
 import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/models/how_to_make.dart';
+import 'package:currydesignerlite/stores/curry_material_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:currydesignerlite/stores/how_to_make_store.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,9 @@ class Note extends StatelessWidget {
       ),
       ChangeNotifierProvider<HowToMakeStore>(
         create: (context) => HowToMakeStore(),
+      ),
+      ChangeNotifierProvider<CurryMaterialStore>(
+        create: (context) => CurryMaterialStore(),
       )
     ], child: _Note());
   }
@@ -92,7 +97,7 @@ class _Note extends StatelessWidget {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: const Icon(
-                  Icons.history,
+                  const IconData(0xe802, fontFamily: 'History'),
                   size: 40,
                 ),
                 title: const Text(
@@ -112,7 +117,7 @@ class _Note extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: const Icon(
-                  const IconData(0xe800, fontFamily: 'Knife'),
+                  const IconData(0xe803, fontFamily: 'HowToMake'),
                   size: 40,
                 ),
                 title: Text(
@@ -143,17 +148,34 @@ class _Note extends StatelessWidget {
           label: const Text("このバージョンから更新"),
         );
       case 1:
-        return FloatingActionButton.extended();
+        return FloatingActionButton.extended(
+          onPressed: () => {
+            context
+                .read<CurryMaterialStore>()
+                .createCurryMaterial(CurryMaterial(
+                  recipeId: version.getRecipeId,
+                  versionId: version.getId,
+                  materialName: "",
+                  materialAmount: "",
+                ))
+          },
+          icon: const Icon(Icons.add),
+          label: const Text(
+            "材料の追加",
+            style: TextStyle(letterSpacing: 1),
+          ),
+        );
       case 2:
         return FloatingActionButton.extended(
           onPressed: () => {
             context.read<HowToMakeStore>().createHowToMake(HowToMake(
                   recipeId: version.getRecipeId,
                   versionId: version.getId,
+                  howToMake: "",
                 ))
           },
           icon: const Icon(Icons.add),
-          label: const Text("作り方を追加"),
+          label: const Text("作り方の追加"),
         );
       default:
         return FloatingActionButton.extended();

@@ -38,8 +38,7 @@ class RecipeDao {
           'FROM Recipe r '
           'INNER JOIN Version v '
           'ON r.id = v.recipe_id '
-          'GROUP BY r.id '
-          'ORDER BY MAX(v.update_date) DESC');
+          'GROUP BY r.id ');
     }
 
     List<Recipe> recipes = result.isNotEmpty

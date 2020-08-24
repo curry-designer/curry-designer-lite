@@ -31,8 +31,10 @@ class _VersionManagement extends StatelessWidget {
             ? args["starCount"]
             : context.select((VersionStore store) => store.getStarCount);
 
+    // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
     FocusScopeNode currentFocus = FocusScope.of(context);
 
+    // 入力キーボードを使用の際に全体のBottomをあげる。入力キーボードでフォームが隠れてしまうため。
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
 
     return GestureDetector(
@@ -44,6 +46,7 @@ class _VersionManagement extends StatelessWidget {
       },
       child: SingleChildScrollView(
         child: Padding(
+          // 入力キーボードを使用の際に全体のBottomをあげる。入力キーボードでフォームが隠れてしまうため。
           padding: EdgeInsets.only(bottom: bottomSpace),
           child: Column(
             children: <Widget>[

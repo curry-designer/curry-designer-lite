@@ -28,15 +28,47 @@ class HowToMakeStore with ChangeNotifier {
     notifyListeners();
   }
 
-  // Delete version by recipe id.
+  // 作り方の1行を削除
+  Future<void> deleteHowToMake(int id, int recipeId, int versionId) async {
+    await _howToMakeRepository.deleteHowToMake(id, recipeId, versionId);
+    fetchHowToMakes();
+    notifyListeners();
+  }
+
+  // レシピに紐づく作り方の削除
   void deleteHowToMakeByRecipeId(int recipeId) async {
     await _howToMakeRepository.deleteHowToMakeByRecipeId(recipeId);
     fetchHowToMakes();
+    notifyListeners();
   }
 
   // 作り方の更新。
   void updateHowToMake(HowToMake howToMake, String updateDate) async {
     await _howToMakeRepository.updateHowToMake(howToMake, updateDate);
+    fetchHowToMakes();
+    notifyListeners();
+  }
+
+  // 作り方の順序の更新。
+  Future<void> updateOrderHowToMake(
+      HowToMake howToMake, String updateDate) async {
+    await _howToMakeRepository.updateOrderHowToMake(howToMake, updateDate);
+    fetchHowToMakes();
+    notifyListeners();
+  }
+
+  // 作り方の順序を1つ繰り上げて更新
+  Future<void> updateOrderHowToMakeUp(
+      HowToMake howToMake, String updateDate) async {
+    await _howToMakeRepository.updateOrderHowToMakeUp(howToMake, updateDate);
+    fetchHowToMakes();
+    notifyListeners();
+  }
+
+  // 作り方の順序を1つ繰り下げて更新
+  Future<void> updateOrderHowToMakeDown(
+      HowToMake howToMake, String updateDate) async {
+    await _howToMakeRepository.updateOrderHowToMakeDown(howToMake, updateDate);
     fetchHowToMakes();
     notifyListeners();
   }

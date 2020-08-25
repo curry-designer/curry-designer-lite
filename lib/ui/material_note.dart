@@ -1,7 +1,6 @@
 import 'package:currydesignerlite/models/curry_material.dart';
 import 'package:currydesignerlite/stores/curry_material_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
-import 'package:currydesignerlite/stores/how_to_make_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -33,7 +32,7 @@ class _MaterialNoteWidget extends StatelessWidget {
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
 
     return GestureDetector(
-      // Keyboard is closed when tapping anywhere.
+      // 入力キーボードをどこを押しても閉じれるようにする。
       onTap: () {
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
@@ -164,7 +163,6 @@ class _MaterialList extends StatelessWidget {
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     child: Container(
-                      color: Colors.white,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[

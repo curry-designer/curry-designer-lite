@@ -34,35 +34,35 @@ class _Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
     FocusScopeNode currentFocus = FocusScope.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.home,
-          ),
-          onPressed: () {
-            Navigator.pushNamed(context, "/");
-          },
-        ),
-        title: Text('Curry Note Lite'),
-        actions: <Widget>[
-          IconButton(
+    return GestureDetector(
+      // 入力キーボードをどこを押しても閉じれるようにする。
+      onTap: () {
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
             icon: Icon(
-              Icons.settings,
+              Icons.home,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, "/");
+            },
           ),
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
-      body: GestureDetector(
-        // Keyboard is closed when tapping anywhere.
-        onTap: () {
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Align(
+          title: Text('Curry Note Lite'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+              ),
+              onPressed: () {},
+            ),
+          ],
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Align(
           alignment: Alignment.center,
           child: Container(
             padding: EdgeInsets.only(bottom: bottomSpace),
@@ -99,12 +99,12 @@ class _Home extends StatelessWidget {
             ),
           ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
-        icon: Icon(Icons.add),
-        label: Text("レシピの追加"),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => Navigator.pushNamed(context, '/register-recipe'),
+          icon: Icon(Icons.add),
+          label: Text("レシピの追加"),
+        ),
       ),
     );
   }
@@ -130,7 +130,9 @@ class ShowCurryItemList extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
             child: Text(
-              "検索結果が0件です",
+              context.select((RecipeStore store) => store.isSearch)
+                  ? "検索結果が0件です"
+                  : "",
               style: TextStyle(fontSize: 20.0),
             ),
           );

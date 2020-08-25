@@ -10,11 +10,13 @@ class RecipeStore with ChangeNotifier {
   // Initialize each value.
   String _recipeName = "";
   String _searchResult = "";
+  bool _isSearch = false;
 
   // Getter method.
   Future<List<Recipe>> get getRecipes => fetchRecipes();
   String get getCurryRecipeName => _recipeName;
   String get getSearchResult => _searchResult;
+  bool get isSearch => _isSearch;
 
   // Fetch all curry recipes.
   Future<List<Recipe>> fetchRecipes({String query}) async {
@@ -49,5 +51,6 @@ class RecipeStore with ChangeNotifier {
   // Set search result.
   void setSearchResult(String searchResult) {
     _searchResult = searchResult;
+    _isSearch = true;
   }
 }

@@ -57,7 +57,9 @@ class _Home extends StatelessWidget {
               icon: Icon(
                 Icons.settings,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, "/setting");
+              },
             ),
           ],
         ),

@@ -1,3 +1,7 @@
+import 'package:currydesignerlite/ui/setting.dart';
+import 'package:currydesignerlite/ui/setting_detail/about_curry_designer_lite.dart';
+import 'package:currydesignerlite/ui/setting_detail/about_tanoshige.dart';
+import 'package:currydesignerlite/ui/setting_detail/terms_of_use.dart';
 import 'package:flutter/material.dart';
 import 'ui/home.dart';
 import 'ui/register_recipe_form.dart';
@@ -24,10 +28,15 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
+        '/setting': (BuildContext context) => Setting(),
         '/note': (BuildContext context) => Note(),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
         '/how_to_make_note_detail': (BuildContext context) =>
             HowToMakeNoteDetail(),
+        '/about-curry-designer-lite': (BuildContext context) =>
+            AboutCurryDesignerLite(),
+        '/about-tanoshige': (BuildContext context) => AboutTanoshige(),
+        '/terms-of-use': (BuildContext context) => TermsOfUse(),
       },
     );
   }

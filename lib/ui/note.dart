@@ -74,14 +74,6 @@ class _Note extends StatelessWidget {
                   Navigator.pushNamed(context, "/");
                 }),
             title: Text(recipeName),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(
-                  Icons.settings,
-                ),
-                onPressed: () {},
-              ),
-            ],
           ),
           resizeToAvoidBottomInset: false,
           body: _pageWidgets.elementAt(

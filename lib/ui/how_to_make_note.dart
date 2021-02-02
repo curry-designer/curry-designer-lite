@@ -17,8 +17,8 @@ class HowToMakeNote extends StatelessWidget {
 class _HowToMakeNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Map args = context.select((VersionStore store) => store.getArgs);
-    final maxVersion = args["maxVersion"];
+    final args = context.select((VersionStore store) => store.getArgs);
+    final maxVersion = args['maxVersion'] as int;
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null
             ? maxVersion
@@ -33,16 +33,16 @@ class _HowToMakeNote extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Container(
-              padding: EdgeInsets.only(top: 10.0),
+              padding: const EdgeInsets.only(top: 10),
               width: MediaQuery.of(context).size.width * 0.88,
               child: Column(
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 9, 0, 0),
                     child: Align(
                       alignment: Alignment.topLeft,
-                      child: Text("Version: " + currentVersion.toString(),
-                          style: const TextStyle(fontSize: 25.0)),
+                      child: Text('Version: ${currentVersion.toString()}',
+                          style: const TextStyle(fontSize: 25)),
                     ),
                   ),
                   _HowToMakeList(
@@ -59,7 +59,8 @@ class _HowToMakeNote extends StatelessWidget {
 }
 
 class _HowToMakeList extends StatelessWidget {
-  _HowToMakeList({Key key, this.recipeId, this.versionId}) : super(key: key);
+  const _HowToMakeList({Key key, this.recipeId, this.versionId})
+      : super(key: key);
   final int recipeId;
   final int versionId;
 
@@ -68,9 +69,9 @@ class _HowToMakeList extends StatelessWidget {
     return FutureBuilder<List<HowToMake>>(
       future: context.select((HowToMakeStore store) =>
           store.fetchHowToMakes(recipeId: recipeId, versionId: versionId)),
-      builder: (context, AsyncSnapshot<List<HowToMake>> snapshot) {
+      builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return ListView.builder(
           shrinkWrap: true,
@@ -80,7 +81,7 @@ class _HowToMakeList extends StatelessWidget {
             return Column(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: Row(
                     // 作り方と順序アイコンを左右に寄せる。
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,47 +89,49 @@ class _HowToMakeList extends StatelessWidget {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "作り方" + item.getOrderHowToMake.toString(),
-                          style: const TextStyle(fontSize: 15.0),
+                          '作り方${item.getOrderHowToMake.toString()}',
+                          style: const TextStyle(fontSize: 15),
                         ),
                       ),
                       Container(
-                        child: Row(children: <Widget>[
-                          item.getOrderHowToMake != snapshot.data.length
-                              ? Container(
-                                  child: IconButton(
-                                    icon: Icon(const IconData(0xe801,
-                                        fontFamily: 'Down')),
-                                    color: Colors.amber,
-                                    onPressed: () {
-                                      context
-                                          .read<HowToMakeStore>()
-                                          .updateOrderHowToMakeDown(
-                                              item,
-                                              DateFormat("yyyy.MM.dd")
-                                                  .format(new DateTime.now()));
-                                    },
-                                  ),
-                                )
-                              : Container(),
-                          item.getOrderHowToMake != 1
-                              ? Container(
-                                  child: IconButton(
-                                    icon: Icon(const IconData(0xe802,
-                                        fontFamily: 'Up')),
-                                    color: Colors.amber,
-                                    onPressed: () {
-                                      context
-                                          .read<HowToMakeStore>()
-                                          .updateOrderHowToMakeUp(
-                                              item,
-                                              DateFormat("yyyy.MM.dd")
-                                                  .format(new DateTime.now()));
-                                    },
-                                  ),
-                                )
-                              : Container(),
-                        ]),
+                        child: Row(
+                          children: <Widget>[
+                            item.getOrderHowToMake != snapshot.data.length
+                                ? Container(
+                                    child: IconButton(
+                                      icon: const Icon(const IconData(0xe801,
+                                          fontFamily: 'Down')),
+                                      color: Colors.amber,
+                                      onPressed: () {
+                                        context
+                                            .read<HowToMakeStore>()
+                                            .updateOrderHowToMakeDown(
+                                                item,
+                                                DateFormat('yyyy.MM.dd')
+                                                    .format(DateTime.now()));
+                                      },
+                                    ),
+                                  )
+                                : Container(),
+                            item.getOrderHowToMake != 1
+                                ? Container(
+                                    child: IconButton(
+                                      icon: const Icon(const IconData(0xe802,
+                                          fontFamily: 'Up')),
+                                      color: Colors.amber,
+                                      onPressed: () {
+                                        context
+                                            .read<HowToMakeStore>()
+                                            .updateOrderHowToMakeUp(
+                                                item,
+                                                DateFormat('yyyy.MM.dd')
+                                                    .format(DateTime.now()));
+                                      },
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -136,30 +139,33 @@ class _HowToMakeList extends StatelessWidget {
                 Container(
                   child: Slidable(
                     key: Key(item.getId.toString()),
-                    actionPane: SlidableDrawerActionPane(),
+                    actionPane: const SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     child: Container(
                       color: Colors.white,
                       child: InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, '/how_to_make_note_detail',
-                                arguments: {
-                                  "id": item.id,
-                                  "recipeId": item.getRecipeId,
-                                  "versionId": item.getVersionId,
-                                  "orderHowToMake": item.getOrderHowToMake,
-                                  "howToMake": item.getHowToMake
-                                });
-                          },
-                          child: Card(
-                            child: ListTile(
-                              title: Text(
-                                item.getHowToMake,
-                                style: TextStyle(fontSize: 15.0),
-                              ),
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/how_to_make_note_detail',
+                            arguments: {
+                              'id': item.id,
+                              'recipeId': item.getRecipeId,
+                              'versionId': item.getVersionId,
+                              'orderHowToMake': item.getOrderHowToMake,
+                              'howToMake': item.getHowToMake
+                            },
+                          );
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Text(
+                              item.getHowToMake,
+                              style: const TextStyle(fontSize: 15),
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                     secondaryActions: <Widget>[
                       IconSlideAction(
@@ -181,37 +187,37 @@ class _HowToMakeList extends StatelessWidget {
   }
 
   void _showDialog(int i, HowToMake item, BuildContext context) => {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text('削除'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                        '作り方' + item.getOrderHowToMake.toString() + 'を削除しますか？'),
-                  ],
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("CANCEL"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  FlatButton(
-                      child: Text("OK"),
-                      onPressed: () => _deleteRecipe(item, context))
+        showDialog<void>(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: const Text('削除'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('作り方${item.getOrderHowToMake.toString()}を削除しますか？'),
                 ],
-              );
-            })
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('CANCEL'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () => _deleteRecipe(item, context))
+              ],
+            );
+          },
+        ),
       };
 
-  void _deleteRecipe(HowToMake item, BuildContext context) async => {
+  Future<void> _deleteRecipe(HowToMake item, BuildContext context) async => {
         await context
             .read<HowToMakeStore>()
             .deleteHowToMake(item.id, item.getRecipeId, item.getVersionId),
         await context.read<HowToMakeStore>().updateOrderHowToMake(
-            item, DateFormat("yyyy.MM.dd").format(new DateTime.now())),
+            item, DateFormat('yyyy.MM.dd').format(DateTime.now())),
         Navigator.pop(context)
       };
 }

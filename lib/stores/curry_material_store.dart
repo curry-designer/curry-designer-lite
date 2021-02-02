@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:currydesignerlite/models/curry_material.dart';
 import 'package:currydesignerlite/repository/curry_material_repository.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class CurryMaterialStore with ChangeNotifier {
   // Get instance of the Repository.
@@ -17,7 +17,7 @@ class CurryMaterialStore with ChangeNotifier {
   // すべての材料を取得。
   Future<List<CurryMaterial>> fetchCurryMaterials(
       {int recipeId, int versionId}) async {
-    return await _materialRepository.fetchCurryMaterials(
+    return _materialRepository.fetchCurryMaterials(
         recipeId: recipeId, versionId: versionId);
   }
 
@@ -37,14 +37,14 @@ class CurryMaterialStore with ChangeNotifier {
   }
 
   // レシピに紐づく材料の削除
-  void deleteCurryMaterialByRecipeId(int recipeId) async {
+  Future<void> deleteCurryMaterialByRecipeId(int recipeId) async {
     await _materialRepository.deleteCurryMaterialByRecipeId(recipeId);
     fetchCurryMaterials();
     notifyListeners();
   }
 
   // 材料名の更新。
-  void updateCurryMaterialName(
+  Future<void> updateCurryMaterialName(
       CurryMaterial material, String updateDate) async {
     await _materialRepository.updateCurryMaterialName(material, updateDate);
     fetchCurryMaterials();
@@ -52,7 +52,7 @@ class CurryMaterialStore with ChangeNotifier {
   }
 
   // 材料の分量の更新。
-  void updateCurryMaterialAmount(
+  Future<void> updateCurryMaterialAmount(
       CurryMaterial material, String updateDate) async {
     await _materialRepository.updateCurryMaterialAmount(material, updateDate);
     fetchCurryMaterials();

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class VersionManagement extends StatelessWidget {
-  VersionManagement({Key key, this.snapshot}) : super(key: key);
+  const VersionManagement({Key key, this.snapshot}) : super(key: key);
   final AsyncSnapshot<List<Version>> snapshot;
   @override
   Widget build(BuildContext context) {
@@ -14,12 +14,12 @@ class VersionManagement extends StatelessWidget {
 }
 
 class _VersionManagement extends StatelessWidget {
-  _VersionManagement({Key key, this.snapshot}) : super(key: key);
+  const _VersionManagement({Key key, this.snapshot}) : super(key: key);
   final AsyncSnapshot<List<Version>> snapshot;
   @override
   Widget build(BuildContext context) {
-    final Map args = context.select((VersionStore store) => store.getArgs);
-    final maxVersion = args["maxVersion"];
+    final args = context.select((VersionStore store) => store.getArgs);
+    final maxVersion = args['maxVersion'] as int;
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null
             ? maxVersion
@@ -28,11 +28,11 @@ class _VersionManagement extends StatelessWidget {
         context.select((VersionStore store) => store.getMapVersions);
     final starCount =
         context.select((VersionStore store) => store.getStarCount) == null
-            ? args["starCount"]
+            ? args['starCount'] as int
             : context.select((VersionStore store) => store.getStarCount);
 
     // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
-    FocusScopeNode currentFocus = FocusScope.of(context);
+    final currentFocus = FocusScope.of(context);
 
     // 入力キーボードを使用の際に全体のBottomをあげる。入力キーボードでフォームが隠れてしまうため。
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
@@ -53,7 +53,7 @@ class _VersionManagement extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  padding: EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(top: 10),
                   width: MediaQuery.of(context).size.width * 0.88,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -63,18 +63,18 @@ class _VersionManagement extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           DropdownButton(
-                            hint: Text('Version: ' + currentVersion.toString()),
+                            hint: Text('Version: ${currentVersion.toString()}'),
                             value: currentVersion,
                             items: snapshot.data.map((item) {
                               return DropdownMenuItem(
                                 child: Text(
-                                  'Version: ' + item.getId.toString(),
-                                  style: TextStyle(fontSize: 25.0),
+                                  'Version: ${item.getId.toString()}',
+                                  style: const TextStyle(fontSize: 25),
                                 ),
                                 value: item.getId,
                               );
                             }).toList(),
-                            onChanged: (value) => context
+                            onChanged: (int value) => context
                                 .read<VersionStore>()
                                 .setDropdownVersion(value),
                           ),
@@ -82,10 +82,10 @@ class _VersionManagement extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Container(
-                                  padding: const EdgeInsets.all(0.0),
+                                  padding: const EdgeInsets.all(0),
                                   width: 30.0,
                                   child: IconButton(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: const EdgeInsets.all(0),
                                     icon: Icon(
                                       starCount >= 1
                                           ? Icons.star
@@ -99,10 +99,10 @@ class _VersionManagement extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.all(0.0),
-                                  width: 30.0,
+                                  padding: const EdgeInsets.all(0),
+                                  width: 30,
                                   child: IconButton(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: const EdgeInsets.all(0),
                                     icon: Icon(
                                       starCount >= 2
                                           ? Icons.star
@@ -116,10 +116,10 @@ class _VersionManagement extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.all(0.0),
-                                  width: 30.0,
+                                  padding: const EdgeInsets.all(0),
+                                  width: 30,
                                   child: IconButton(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: const EdgeInsets.all(0),
                                     icon: Icon(
                                       starCount >= 3
                                           ? Icons.star
@@ -133,10 +133,10 @@ class _VersionManagement extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.all(0.0),
+                                  padding: const EdgeInsets.all(0),
                                   width: 30.0,
                                   child: IconButton(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: const EdgeInsets.all(0),
                                     icon: Icon(
                                       starCount >= 4
                                           ? Icons.star
@@ -150,10 +150,10 @@ class _VersionManagement extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.all(0.0),
-                                  width: 30.0,
+                                  padding: const EdgeInsets.all(0),
+                                  width: 30,
                                   child: IconButton(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: const EdgeInsets.all(0),
                                     icon: Icon(
                                       starCount >= 5
                                           ? Icons.star
@@ -172,19 +172,19 @@ class _VersionManagement extends StatelessWidget {
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
                         child: Align(
                           alignment: Alignment.center,
-                          child: Text("更新日: " +
-                              versionMap[currentVersion].getLatestUpdateDate),
+                          child: Text(
+                              '更新日: ${versionMap[currentVersion].getLatestUpdateDate}'),
                         ),
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: const Text(
-                            "メモ",
+                            'メモ',
                             style: const TextStyle(fontSize: 20.0),
                           ),
                         ),
@@ -196,12 +196,12 @@ class _VersionManagement extends StatelessWidget {
                           initialValue: versionMap[currentVersion].getComment,
                           onChanged: (value) =>
                               context.read<VersionStore>().updateComment(
-                                    new Version(
+                                    Version(
                                       id: versionMap[currentVersion].getId,
                                       recipeId: versionMap[currentVersion]
                                           .getRecipeId,
-                                      updateDate: DateFormat("yyyy.MM.dd")
-                                          .format(new DateTime.now()),
+                                      updateDate: DateFormat('yyyy.MM.dd')
+                                          .format(DateTime.now()),
                                       comment: value,
                                     ),
                                   ),
@@ -210,7 +210,7 @@ class _VersionManagement extends StatelessWidget {
                               .isTextFieldOpenFalse(),
                           maxLength: 140,
                           maxLines: 13,
-                          style: const TextStyle(fontSize: 15.0),
+                          style: const TextStyle(fontSize: 15),
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                           ),
@@ -232,11 +232,13 @@ class _VersionManagement extends StatelessWidget {
     context.read<VersionStore>().setStarCount(i);
 
     // DBの星の数をUpdateする。
-    context.read<VersionStore>().updateStarCount(new Version(
-          id: version.getId,
-          recipeId: version.getRecipeId,
-          updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-          starCount: i,
-        ));
+    context.read<VersionStore>().updateStarCount(
+          Version(
+            id: version.getId,
+            recipeId: version.getRecipeId,
+            updateDate: DateFormat('yyyy.MM.dd').format(DateTime.now()),
+            starCount: i,
+          ),
+        );
   }
 }

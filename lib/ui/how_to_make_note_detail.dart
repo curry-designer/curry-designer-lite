@@ -27,14 +27,15 @@ class _HowToMakeNoteDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
-    FocusScopeNode currentFocus = FocusScope.of(context);
+    final currentFocus = FocusScope.of(context);
 
-    Map args = ModalRoute.of(context).settings.arguments;
-    final id = args["id"];
-    final recipeId = args["recipeId"];
-    final versionId = args["versionId"];
-    final orderHowToMake = args["orderHowToMake"];
-    final howToMake = args["howToMake"];
+    final args =
+        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
+    final id = args['id'] as int;
+    final recipeId = args['recipeId'] as int;
+    final versionId = args['versionId'] as int;
+    final orderHowToMake = args['orderHowToMake'] as int;
+    final howToMake = args['howToMake'] as String;
 
     return GestureDetector(
       // 入力キーボードをどこを押しても閉じれるようにする。
@@ -45,7 +46,7 @@ class _HowToMakeNoteDetail extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('作り方' + orderHowToMake.toString()),
+          title: Text('作り方${orderHowToMake.toString()}'),
         ),
         body: Form(
           key: _formKey,
@@ -57,19 +58,18 @@ class _HowToMakeNoteDetail extends StatelessWidget {
                   TextFormField(
                     key: Key(orderHowToMake.toString()),
                     initialValue: howToMake,
-                    onChanged: (value) => context
-                        .read<HowToMakeStore>()
-                        .updateHowToMake(
-                          new HowToMake(
-                            howToMake: value,
-                            id: id,
-                            recipeId: recipeId,
-                            versionId: versionId,
-                            orderHowToMake: orderHowToMake,
-                          ),
-                          DateFormat("yyyy.MM.dd").format(new DateTime.now()),
-                        ),
-                    style: const TextStyle(fontSize: 15.0),
+                    onChanged: (value) =>
+                        context.read<HowToMakeStore>().updateHowToMake(
+                              HowToMake(
+                                howToMake: value,
+                                id: id,
+                                recipeId: recipeId,
+                                versionId: versionId,
+                                orderHowToMake: orderHowToMake,
+                              ),
+                              DateFormat('yyyy.MM.dd').format(DateTime.now()),
+                            ),
+                    style: const TextStyle(fontSize: 15),
                     maxLength: 100,
                     maxLines: 6,
                     onTap: () => {

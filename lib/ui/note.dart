@@ -7,9 +7,9 @@ import 'package:currydesignerlite/stores/how_to_make_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'version_management.dart';
-import 'material_note.dart';
 import 'how_to_make_note.dart';
+import 'material_note.dart';
+import 'version_management.dart';
 
 class Note extends StatelessWidget {
   @override
@@ -31,12 +31,12 @@ class Note extends StatelessWidget {
 class _Note extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    context.select((VersionStore store) =>
-        store.setArgs(ModalRoute.of(context).settings.arguments));
-    final Map args = context.select((VersionStore store) => store.getArgs);
-    final id = args["id"];
-    final recipeName = args["recipeName"];
-    final maxVersion = args["maxVersion"];
+    context.select((VersionStore store) => store.setArgs(
+        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>));
+    final args = context.select((VersionStore store) => store.getArgs);
+    final id = args['id'] as int;
+    final recipeName = args['recipeName'] as String;
+    final maxVersion = args['maxVersion'] as int;
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null
             ? maxVersion
@@ -49,9 +49,9 @@ class _Note extends StatelessWidget {
     return FutureBuilder<List<Version>>(
       future: context
           .select((VersionStore store) => store.fetchVersions(recipeId: id)),
-      builder: (context, AsyncSnapshot<List<Version>> snapshot) {
+      builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         // Convert version list to map.
         context.select((VersionStore store) =>
@@ -71,7 +71,7 @@ class _Note extends StatelessWidget {
                   Icons.home,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, "/");
+                  Navigator.pushNamed(context, '/');
                 }),
             title: Text(recipeName),
           ),
@@ -92,30 +92,21 @@ class _Note extends StatelessWidget {
                   const IconData(0xe802, fontFamily: 'History'),
                   size: 40,
                 ),
-                title: const Text(
-                  'バージョン管理',
-                  style: const TextStyle(fontSize: 12),
-                ),
+                label: 'バージョン管理',
               ),
               BottomNavigationBarItem(
                 icon: const Icon(
                   const IconData(0xe800, fontFamily: 'Material'),
                   size: 40,
                 ),
-                title: const Text(
-                  '材料',
-                  style: const TextStyle(fontSize: 12),
-                ),
+                label: '材料',
               ),
               BottomNavigationBarItem(
                 icon: const Icon(
                   const IconData(0xe803, fontFamily: 'HowToMake'),
                   size: 40,
                 ),
-                title: Text(
-                  '作り方',
-                  style: const TextStyle(fontSize: 12),
-                ),
+                label: '作り方',
               ),
             ],
             currentIndex: currentIndex,
@@ -137,7 +128,7 @@ class _Note extends StatelessWidget {
           onPressed: () =>
               _showDialog(version, maxVersion, recipeName, context),
           icon: const Icon(Icons.add),
-          label: const Text("このバージョンから更新"),
+          label: const Text('このバージョンから更新'),
         );
       case 1:
         return FloatingActionButton.extended(
@@ -147,13 +138,13 @@ class _Note extends StatelessWidget {
                 .createCurryMaterial(CurryMaterial(
                   recipeId: version.getRecipeId,
                   versionId: version.getId,
-                  materialName: "",
-                  materialAmount: "",
+                  materialName: '',
+                  materialAmount: '',
                 ))
           },
           icon: const Icon(Icons.add),
           label: const Text(
-            "材料の追加",
+            '材料の追加',
             style: TextStyle(letterSpacing: 1),
           ),
         );
@@ -163,53 +154,58 @@ class _Note extends StatelessWidget {
             context.read<HowToMakeStore>().createHowToMake(HowToMake(
                   recipeId: version.getRecipeId,
                   versionId: version.getId,
-                  howToMake: "",
+                  howToMake: '',
                 ))
           },
           icon: const Icon(Icons.add),
-          label: const Text("作り方の追加"),
+          label: const Text('作り方の追加'),
         );
       default:
-        return FloatingActionButton.extended();
+        return null;
     }
   }
 
   void _showDialog(Version version, int maxVersion, String recipeName,
           BuildContext context) =>
       {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: const Text('レシピの更新'),
-                content: const Text('レシピの更新をしますか？'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: const Text("CANCEL"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  FlatButton(
-                      child: const Text("OK"),
-                      onPressed: () => _createVersion(
-                          version, maxVersion, recipeName, context)),
-                ],
-              );
-            })
+        showDialog<void>(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: const Text('レシピの更新'),
+              content: const Text('レシピの更新をしますか？'),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('CANCEL'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () => _createVersion(
+                        version, maxVersion, recipeName, context)),
+              ],
+            );
+          },
+        )
       };
 
-  void _createVersion(Version version, int maxVersion, String recipeName,
-          BuildContext context) async =>
+  Future<void> _createVersion(Version version, int maxVersion,
+          String recipeName, BuildContext context) async =>
       {
         await context.read<VersionStore>().createVersion(Version(
               recipeId: version.getRecipeId,
-              updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+              updateDate: DateFormat('yyyy.MM.dd').format(new DateTime.now()),
               starCount: 0,
             )),
-        await Navigator.pushNamed(context, '/note', arguments: {
-          "id": version.getRecipeId,
-          "recipeName": recipeName,
-          "maxVersion": maxVersion + 1,
-          "starCount": 0,
-        }),
+        await Navigator.pushNamed(
+          context,
+          '/note',
+          arguments: {
+            'id': version.getRecipeId,
+            'recipeName': recipeName,
+            'maxVersion': maxVersion + 1,
+            'starCount': 0,
+          },
+        ),
       };
 }

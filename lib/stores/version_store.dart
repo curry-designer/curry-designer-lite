@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/repository/version_repository.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class VersionStore with ChangeNotifier {
   // Get instance of the Repository.
@@ -39,7 +39,7 @@ class VersionStore with ChangeNotifier {
   }
 
   // Delete version by recipe id.
-  void deleteVersionByRecipeId(int recipeId) async {
+  Future<void> deleteVersionByRecipeId(int recipeId) async {
     await _versionRepository.deleteVersionByRecipeId(recipeId);
     fetchVersions();
   }
@@ -61,7 +61,7 @@ class VersionStore with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateStarCount(Version item) async {
+  Future<void> updateStarCount(Version item) async {
     await _versionRepository.updateStarCount(item);
     fetchVersions();
   }
@@ -71,7 +71,7 @@ class VersionStore with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateComment(Version item) async {
+  Future<void> updateComment(Version item) async {
     await _versionRepository.updateComment(item);
     fetchVersions();
     notifyListeners();

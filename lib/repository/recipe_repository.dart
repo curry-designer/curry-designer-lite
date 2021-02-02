@@ -7,9 +7,10 @@ class RecipeRepository {
   Future<List<Recipe>> fetchRecipes({String query}) =>
       recipeDao.fetchRecipes(query: query);
 
-  Future createRecipe(Recipe item) => recipeDao.createRecipe(item);
+  Future<int> createRecipe(Recipe item) => recipeDao.createRecipe(item);
 
   Future deleteRecipe(int id) => recipeDao.deleteRecipe(id);
 
-  Future fetchLatestRecipesId() => recipeDao.fetchLatestRecipesId();
+  Future<List<Recipe>> fetchLatestRecipesId() =>
+      recipeDao.fetchLatestRecipesId();
 }

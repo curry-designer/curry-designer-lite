@@ -1,8 +1,8 @@
 import 'dart:async';
+
 import 'package:currydesignerlite/models/curry_material.dart';
 
 import '../database/database.dart';
-import '../models/how_to_make.dart';
 
 class CurryMaterialDao {
   final dbProvider = DatabaseProvider.dbProvider;
@@ -10,54 +10,99 @@ class CurryMaterialDao {
   // 材料の作成(INSERT文)。
   Future<int> createCurryMaterial(CurryMaterial material) async {
     final db = await dbProvider.database;
-    var latestCurryMaterial = await db.rawQuery(
-        "SELECT MAX(m.id) as id FROM CurryMaterial m WHERE m.recipe_id = ? AND m.version_id = ? GROUP BY m.recipe_id, m.version_id",
-        [
+    int result;
+    await db.transaction((txn) async {
+      final latestCurryMaterial = await txn.rawQuery(
+        'SELECT '
+        'MAX(m.id) as id '
+        'FROM '
+        'CurryMaterial m '
+        'WHERE '
+        'm.recipe_id = ? '
+        'AND '
+        'm.version_id = ? '
+        'GROUP BY '
+        'm.recipe_id, m.version_id',
+        <int>[
           material.getRecipeId,
           material.getVersionId,
-        ]);
-    var count = await db.rawQuery(
-        "SELECT MAX(m.order_material) as order_material FROM CurryMaterial m WHERE m.recipe_id = ? AND m.version_id = ? GROUP BY m.recipe_id, m.version_id ",
-        [
+        ],
+      );
+      final count = await txn.rawQuery(
+        'SELECT '
+        'MAX(m.order_material) as order_material '
+        'FROM '
+        'CurryMaterial m '
+        'WHERE '
+        'm.recipe_id = ? '
+        'AND '
+        'm.version_id = ? '
+        'GROUP BY '
+        'm.recipe_id, '
+        'm.version_id ',
+        <int>[
           material.getRecipeId,
           material.getVersionId,
-        ]);
-    List<CurryMaterial> materials = latestCurryMaterial.isNotEmpty
-        ? latestCurryMaterial
-            .map((item) => CurryMaterial.fromDatabaseJson(item))
-            .toList()
-        : [];
-    List<CurryMaterial> materialsOrder = latestCurryMaterial.isNotEmpty
-        ? count.map((item) => CurryMaterial.fromDatabaseJson(item)).toList()
-        : [];
+        ],
+      );
+      final materials = latestCurryMaterial.isNotEmpty
+          ? latestCurryMaterial
+              .map((item) => CurryMaterial.fromDatabaseJson(item))
+              .toList()
+          : <dynamic>[];
+      final materialsOrder = latestCurryMaterial.isNotEmpty
+          ? count.map((item) => CurryMaterial.fromDatabaseJson(item)).toList()
+          : <dynamic>[];
 
-    if (materials.isEmpty) {
-      var result = db.rawInsert(
-          "INSERT Into CurryMaterial (id,recipe_id,version_id,material_name,material_amount,order_material)"
-          " VALUES (?,?,?,?,?,?)",
-          [
+      if (materials.isEmpty) {
+        result = await txn.rawInsert(
+          'INSERT INTO '
+          'CurryMaterial '
+          '('
+          'id,'
+          'recipe_id,'
+          'version_id,'
+          'material_name,'
+          'material_amount,'
+          'order_material'
+          ')'
+          ' VALUES '
+          '(?,?,?,?,?,?)',
+          <dynamic>[
             1,
             material.getRecipeId,
             material.getVersionId,
-            "",
-            "",
+            '',
+            '',
             1,
-          ]);
-      return result;
-    } else {
-      var result = db.rawInsert(
-          "INSERT Into CurryMaterial (id,recipe_id,version_id,material_name,material_amount,order_material)"
-          " VALUES (?,?,?,?,?,?)",
-          [
+          ],
+        );
+      } else {
+        result = await txn.rawInsert(
+          'INSERT INTO '
+          'CurryMaterial '
+          '(id,'
+          'recipe_id,'
+          'version_id,'
+          'material_name,'
+          'material_amount,'
+          'order_material'
+          ')'
+          ' VALUES '
+          '(?,?,?,?,?,?)',
+          <dynamic>[
             materials[0].getId + 1,
             material.getRecipeId,
             material.getVersionId,
             material.getMaterialName,
             material.getMaterialAmount,
             materialsOrder[0].getOrderMaterial + 1,
-          ]);
-      return result;
-    }
+          ],
+        );
+      }
+    });
+
+    return result;
   }
 
   // 材料の取得(SELECT文)。
@@ -68,35 +113,60 @@ class CurryMaterialDao {
     List<Map<String, dynamic>> result;
     if (recipeId != null && versionId != null) {
       result = await db.rawQuery(
-          'SELECT '
-          'm.id, '
-          'm.recipe_id, '
-          'm.version_id, '
-          'm.material_name, '
-          'm.material_amount, '
-          'm.order_material '
-          'FROM CurryMaterial m '
-          'WHERE '
-          'm.recipe_id = ? '
-          'AND m.version_id = ? '
-          'ORDER BY m.order_material',
-          [recipeId, versionId]);
+        'SELECT '
+        'm.id, '
+        'm.recipe_id, '
+        'm.version_id, '
+        'm.material_name, '
+        'm.material_amount, '
+        'm.order_material '
+        'FROM '
+        'CurryMaterial m '
+        'WHERE '
+        'm.recipe_id = ? '
+        'AND '
+        'm.version_id = ? '
+        'ORDER BY '
+        'm.order_material',
+        <int>[
+          recipeId,
+          versionId,
+        ],
+      );
     } else {
       result = await db.rawQuery('SELECT * FROM CurryMaterial');
     }
 
-    List<CurryMaterial> materials = result.isNotEmpty
-        ? result.map((item) => CurryMaterial.fromDatabaseJson(item)).toList()
-        : [];
-    return materials;
+    // Convert the List<Map<String, dynamic> into a List<Recipe>.
+    return List.generate(result.length, (i) {
+      return CurryMaterial(
+        id: result[i]['id'] as int,
+        recipeId: result[i]['recipe_id'] as int,
+        versionId: result[i]['version_id'] as int,
+        materialName: result[i]['material_name'] as String,
+        materialAmount: result[i]['material_amount'] as String,
+        orderMaterial: result[i]['order_material'] as int,
+      );
+    });
   }
 
   // 材料の1行を削除。
   Future<int> deleteCurryMaterial(int id, int recipeId, int versionId) async {
     final db = await dbProvider.database;
-    var result = await db.rawDelete(
-        'DELETE FROM CurryMaterial WHERE id = ? AND recipe_id = ? AND version_id = ? ',
-        [id, recipeId, versionId]);
+    final result = await db.rawDelete(
+      'DELETE FROM '
+      'CurryMaterial '
+      'WHERE id = ? '
+      'AND '
+      'recipe_id = ? '
+      'AND '
+      'version_id = ? ',
+      <int>[
+        id,
+        recipeId,
+        versionId,
+      ],
+    );
 
     return result;
   }
@@ -104,8 +174,15 @@ class CurryMaterialDao {
   // レシピIdに紐づく材料の削除。
   Future<int> deleteCurryMaterialByRecipeId(int recipeId) async {
     final db = await dbProvider.database;
-    var result = await db
-        .rawDelete('DELETE FROM CurryMaterial WHERE recipe_id = ?', [recipeId]);
+    final result = await db.rawDelete(
+      'DELETE FROM '
+      'CurryMaterial '
+      'WHERE '
+      'recipe_id = ?',
+      <int>[
+        recipeId,
+      ],
+    );
 
     return result;
   }
@@ -114,20 +191,42 @@ class CurryMaterialDao {
   Future<int> updateCurryMaterialName(
       CurryMaterial material, String updateDate) async {
     final db = await dbProvider.database;
-    var result = await db.rawUpdate(
-        'UPDATE CurryMaterial SET material_name = ? WHERE id = ? AND recipe_id = ? AND version_id = ?',
-        [
+    int result;
+    await db.transaction((txn) async {
+      result = await txn.rawUpdate(
+        'UPDATE '
+        'CurryMaterial '
+        'SET '
+        'material_name = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ? '
+        'AND '
+        'version_id = ?',
+        <dynamic>[
           material.getMaterialName,
           material.getId,
           material.getRecipeId,
           material.getVersionId,
-        ]);
-    await db.rawUpdate(
-        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
-      updateDate,
-      material.getVersionId,
-      material.getRecipeId,
-    ]);
+        ],
+      );
+      await txn.rawUpdate(
+        'UPDATE '
+        'Version '
+        'SET '
+        'update_date = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ?',
+        <dynamic>[
+          updateDate,
+          material.getVersionId,
+          material.getRecipeId,
+        ],
+      );
+    });
 
     return result;
   }
@@ -136,20 +235,42 @@ class CurryMaterialDao {
   Future<int> updateCurryMaterialAmount(
       CurryMaterial material, String updateDate) async {
     final db = await dbProvider.database;
-    var result = await db.rawUpdate(
-        'UPDATE CurryMaterial SET material_amount = ? WHERE id = ? AND recipe_id = ? AND version_id = ?',
-        [
+    int result;
+    await db.transaction((txn) async {
+      result = await txn.rawUpdate(
+        'UPDATE '
+        'CurryMaterial '
+        'SET '
+        'material_amount = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ? '
+        'AND '
+        'version_id = ?',
+        <dynamic>[
           material.getMaterialAmount,
           material.getId,
           material.getRecipeId,
           material.getVersionId,
-        ]);
-    await db.rawUpdate(
-        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
-      updateDate,
-      material.getVersionId,
-      material.getRecipeId,
-    ]);
+        ],
+      );
+      await txn.rawUpdate(
+        'UPDATE '
+        'Version '
+        'SET '
+        'update_date = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ?',
+        <dynamic>[
+          updateDate,
+          material.getVersionId,
+          material.getRecipeId,
+        ],
+      );
+    });
 
     return result;
   }
@@ -158,17 +279,35 @@ class CurryMaterialDao {
   Future<int> updateOrderCurryMaterial(
       CurryMaterial material, String updateDate) async {
     final db = await dbProvider.database;
-    var result = await db.rawUpdate(
-        'UPDATE CurryMaterial SET order_material = order_material - 1 WHERE order_material > ?',
-        [
+    int result;
+    await db.transaction((txn) async {
+      result = await txn.rawUpdate(
+        'UPDATE '
+        'CurryMaterial '
+        'SET '
+        'order_material = order_material - 1 '
+        'WHERE '
+        'order_material > ?',
+        <int>[
           material.getOrderMaterial,
-        ]);
-    await db.rawUpdate(
-        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
-      updateDate,
-      material.getVersionId,
-      material.getRecipeId,
-    ]);
+        ],
+      );
+      await txn.rawUpdate(
+        'UPDATE '
+        'Version '
+        'SET '
+        'update_date = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ?',
+        <dynamic>[
+          updateDate,
+          material.getVersionId,
+          material.getRecipeId,
+        ],
+      );
+    });
 
     return result;
   }
@@ -177,7 +316,9 @@ class CurryMaterialDao {
   Future<int> updateOrderCurryMaterialUp(
       CurryMaterial material, String updateDate) async {
     final db = await dbProvider.database;
-    var result = await db.rawUpdate(
+    int result;
+    await db.transaction((txn) async {
+      result = await txn.rawUpdate(
         'UPDATE CurryMaterial SET order_material = '
         'CASE '
         'WHEN '
@@ -190,16 +331,27 @@ class CurryMaterialDao {
         'order_material + 1  '
         'ELSE order_material '
         'END',
-        [
+        <int>[
           material.getOrderMaterial,
           material.getOrderMaterial - 1,
-        ]);
-    await db.rawUpdate(
-        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
-      updateDate,
-      material.getVersionId,
-      material.getRecipeId,
-    ]);
+        ],
+      );
+      await txn.rawUpdate(
+        'UPDATE '
+        'Version '
+        'SET '
+        'update_date = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ?',
+        <dynamic>[
+          updateDate,
+          material.getVersionId,
+          material.getRecipeId,
+        ],
+      );
+    });
 
     return result;
   }
@@ -208,7 +360,9 @@ class CurryMaterialDao {
   Future<int> updateOrderCurryMaterialDown(
       CurryMaterial material, String updateDate) async {
     final db = await dbProvider.database;
-    var result = await db.rawUpdate(
+    int result;
+    await db.transaction((txn) async {
+      result = await txn.rawUpdate(
         'UPDATE CurryMaterial SET order_material = '
         'CASE '
         'WHEN '
@@ -219,18 +373,30 @@ class CurryMaterialDao {
         'order_material = ? '
         'THEN '
         'order_material - 1  '
-        'ELSE order_material '
+        'ELSE '
+        'order_material '
         'END',
-        [
+        <int>[
           material.getOrderMaterial,
           material.getOrderMaterial + 1,
-        ]);
-    await db.rawUpdate(
-        'UPDATE Version SET update_date = ? WHERE id = ? AND recipe_id = ?', [
-      updateDate,
-      material.getVersionId,
-      material.getRecipeId,
-    ]);
+        ],
+      );
+      await txn.rawUpdate(
+        'UPDATE '
+        'Version '
+        'SET '
+        'update_date = ? '
+        'WHERE '
+        'id = ? '
+        'AND '
+        'recipe_id = ?',
+        <dynamic>[
+          updateDate,
+          material.getVersionId,
+          material.getRecipeId,
+        ],
+      );
+    });
 
     return result;
   }

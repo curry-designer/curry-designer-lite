@@ -1,11 +1,10 @@
-import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/models/how_to_make.dart';
-import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:currydesignerlite/stores/how_to_make_store.dart';
+import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HowToMakeNote extends StatelessWidget {
   @override
@@ -107,7 +106,8 @@ class _HowToMakeList extends StatelessWidget {
                                             .read<HowToMakeStore>()
                                             .updateOrderHowToMakeDown(
                                                 item,
-                                                DateFormat('yyyy.MM.dd')
+                                                DateFormat(
+                                                        'yyyy.MM.dd HH:mm:ss')
                                                     .format(DateTime.now()));
                                       },
                                     ),
@@ -124,7 +124,8 @@ class _HowToMakeList extends StatelessWidget {
                                             .read<HowToMakeStore>()
                                             .updateOrderHowToMakeUp(
                                                 item,
-                                                DateFormat('yyyy.MM.dd')
+                                                DateFormat(
+                                                        'yyyy.MM.dd HH:mm:ss')
                                                     .format(DateTime.now()));
                                       },
                                     ),
@@ -217,7 +218,7 @@ class _HowToMakeList extends StatelessWidget {
             .read<HowToMakeStore>()
             .deleteHowToMake(item.id, item.getRecipeId, item.getVersionId),
         await context.read<HowToMakeStore>().updateOrderHowToMake(
-            item, DateFormat('yyyy.MM.dd').format(DateTime.now())),
+            item, DateFormat('yyyy.MM.dd HH:mm:ss').format(DateTime.now())),
         Navigator.pop(context)
       };
 }

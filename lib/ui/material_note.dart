@@ -2,9 +2,9 @@ import 'package:currydesignerlite/models/curry_material.dart';
 import 'package:currydesignerlite/stores/curry_material_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MaterialNoteWidget extends StatelessWidget {
   @override
@@ -121,7 +121,7 @@ class _MaterialList extends StatelessWidget {
                                           .read<CurryMaterialStore>()
                                           .updateOrderCurryMaterialDown(
                                               item,
-                                              DateFormat('yyyy.MM.dd')
+                                              DateFormat('yyyy.MM.dd HH:mm:ss')
                                                   .format(DateTime.now()));
                                     },
                                     child: const Icon(
@@ -142,7 +142,7 @@ class _MaterialList extends StatelessWidget {
                                           .read<CurryMaterialStore>()
                                           .updateOrderCurryMaterialUp(
                                               item,
-                                              DateFormat('yyyy.MM.dd')
+                                              DateFormat('yyyy.MM.dd HH:mm:ss')
                                                   .format(DateTime.now()));
                                     },
                                     child: const Icon(
@@ -184,10 +184,10 @@ class _MaterialList extends StatelessWidget {
                                         recipeId: recipeId,
                                         versionId: versionId,
                                       ),
-                                      DateFormat('yyyy.MM.dd')
+                                      DateFormat('yyyy.MM.dd HH:mm:ss')
                                           .format(DateTime.now()),
                                     ),
-                                style: const TextStyle(fontSize: 15.0),
+                                style: const TextStyle(fontSize: 15),
                                 onTap: () => {
                                   context
                                       .read<CurryMaterialStore>()
@@ -224,7 +224,7 @@ class _MaterialList extends StatelessWidget {
                                         recipeId: recipeId,
                                         versionId: versionId,
                                       ),
-                                      DateFormat('yyyy.MM.dd')
+                                      DateFormat('yyyy.MM.dd HH:mm:ss')
                                           .format(DateTime.now()),
                                     ),
                                 style: const TextStyle(fontSize: 15),
@@ -301,7 +301,7 @@ class _MaterialList extends StatelessWidget {
             .read<CurryMaterialStore>()
             .deleteCurryMaterial(item.id, item.getRecipeId, item.getVersionId),
         await context.read<CurryMaterialStore>().updateOrderCurryMaterial(
-            item, DateFormat('yyyy.MM.dd').format(new DateTime.now())),
+            item, DateFormat('yyyy.MM.dd HH:mm:ss').format(new DateTime.now())),
         Navigator.pop(context)
       };
 }

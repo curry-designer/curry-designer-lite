@@ -1,11 +1,9 @@
 import 'package:currydesignerlite/models/how_to_make.dart';
-import 'package:currydesignerlite/models/version.dart';
-import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:currydesignerlite/stores/how_to_make_store.dart';
+import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/recipe.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HowToMakeNoteDetail extends StatelessWidget {
   @override
@@ -67,7 +65,8 @@ class _HowToMakeNoteDetail extends StatelessWidget {
                                 versionId: versionId,
                                 orderHowToMake: orderHowToMake,
                               ),
-                              DateFormat('yyyy.MM.dd').format(DateTime.now()),
+                              DateFormat('yyyy.MM.dd HH:mm:ss')
+                                  .format(DateTime.now()),
                             ),
                     style: const TextStyle(fontSize: 15),
                     maxLength: 100,

@@ -41,7 +41,7 @@ class RecipeDao {
       result = await db.rawQuery('SELECT '
           'r.id AS id, '
           'r.name AS name, '
-          'MAX(v.update_date) AS latest_update_date, '
+          'MAX(v.updated_date_time) AS latest_update_date, '
           'v.star_count AS star_count, '
           'MAX(v.id) AS max_version '
           'FROM '
@@ -51,7 +51,9 @@ class RecipeDao {
           'ON '
           'r.id = v.recipe_id '
           'GROUP BY '
-          'r.id ');
+          'r.id '
+          'Order BY '
+          'latest_update_date DESC ');
     }
 
     // Convert the List<Map<String, dynamic> into a List<Recipe>.

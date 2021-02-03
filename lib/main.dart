@@ -3,11 +3,11 @@ import 'package:currydesignerlite/ui/setting_detail/about_curry_designer_lite.da
 import 'package:currydesignerlite/ui/setting_detail/about_tanoshige.dart';
 import 'package:currydesignerlite/ui/setting_detail/terms_of_use.dart';
 import 'package:flutter/material.dart';
+
 import 'ui/home.dart';
-import 'ui/register_recipe_form.dart';
-import 'ui/material_note.dart';
-import 'ui/note.dart';
 import 'ui/how_to_make_note_detail.dart';
+import 'ui/note.dart';
+import 'ui/register_recipe_form.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Curry Note',
       theme: ThemeData(
         primarySwatch: Colors.amber,
         accentColor: Colors.amberAccent,
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       // MaterialApp contains our top-level Navigator
       initialRoute: '/',
       routes: {
-        '/': (BuildContext context) => Home(title: 'Curry Note Lite'),
+        '/': (BuildContext context) => Home(title: 'Curry Note'),
         '/setting': (BuildContext context) => Setting(),
         '/note': (BuildContext context) => Note(),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),

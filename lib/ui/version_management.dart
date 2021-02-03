@@ -1,8 +1,8 @@
 import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class VersionManagement extends StatelessWidget {
   const VersionManagement({Key key, this.snapshot}) : super(key: key);
@@ -176,7 +176,7 @@ class _VersionManagement extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
-                              '更新日: ${versionMap[currentVersion].getLatestUpdateDate}'),
+                              '更新日: ${versionMap[currentVersion].getLatestUpdateDateTime}'),
                         ),
                       ),
                       const Padding(
@@ -200,8 +200,9 @@ class _VersionManagement extends StatelessWidget {
                                       id: versionMap[currentVersion].getId,
                                       recipeId: versionMap[currentVersion]
                                           .getRecipeId,
-                                      updateDate: DateFormat('yyyy.MM.dd')
-                                          .format(DateTime.now()),
+                                      updateDateTime:
+                                          DateFormat('yyyy.MM.dd HH:mm:ss')
+                                              .format(DateTime.now()),
                                       comment: value,
                                     ),
                                   ),
@@ -236,7 +237,8 @@ class _VersionManagement extends StatelessWidget {
           Version(
             id: version.getId,
             recipeId: version.getRecipeId,
-            updateDate: DateFormat('yyyy.MM.dd').format(DateTime.now()),
+            updateDateTime:
+                DateFormat('yyyy.MM.dd HH:mm:ss').format(DateTime.now()),
             starCount: i,
           ),
         );

@@ -2,8 +2,9 @@ import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/stores/recipe_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import '../models/recipe.dart';
 
 class RegisterRecipeForm extends StatelessWidget {
@@ -84,7 +85,8 @@ class _RegisterRecipeForm extends StatelessWidget {
       final recipeId = recipes[0].getId;
       await context.read<VersionStore>().createVersion(Version(
             recipeId: recipeId,
-            updateDate: DateFormat('yyyy.MM.dd').format(new DateTime.now()),
+            updateDateTime:
+                DateFormat('yyyy.MM.dd HH:mm:ss').format(new DateTime.now()),
             starCount: 0,
           ));
       Navigator.pushNamed(context, '/');

@@ -5,6 +5,7 @@ import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+
 import '../models/recipe.dart';
 
 class Home extends StatelessWidget {
@@ -51,7 +52,7 @@ class _Home extends StatelessWidget {
               Navigator.pushNamed(context, '/');
             },
           ),
-          title: const Text('Curry Note Lite'),
+          title: const Text('Curry Note'),
           actions: <Widget>[
             IconButton(
               icon: const Icon(

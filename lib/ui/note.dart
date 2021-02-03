@@ -1,12 +1,13 @@
 import 'package:currydesignerlite/models/curry_material.dart';
-import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/models/how_to_make.dart';
+import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/stores/curry_material_store.dart';
-import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:currydesignerlite/stores/how_to_make_store.dart';
+import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import 'how_to_make_note.dart';
 import 'material_note.dart';
 import 'version_management.dart';
@@ -194,7 +195,8 @@ class _Note extends StatelessWidget {
       {
         await context.read<VersionStore>().createVersion(Version(
               recipeId: version.getRecipeId,
-              updateDate: DateFormat('yyyy.MM.dd').format(new DateTime.now()),
+              updateDateTime:
+                  DateFormat('yyyy.MM.dd HH:mm:ss').format(new DateTime.now()),
               starCount: 0,
             )),
         await Navigator.pushNamed(

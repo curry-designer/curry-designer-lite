@@ -32,13 +32,13 @@ class VersionDao {
         result = await txn.rawInsert(
           'INSERT INTO '
           'Version '
-          '(id,recipe_id,update_date,star_count,comment) '
+          '(id,recipe_id,updated_date_time,star_count,comment) '
           'VALUES '
           '(?,?,?,?,?)',
           <dynamic>[
             1,
             version.getRecipeId,
-            version.getLatestUpdateDate,
+            version.getLatestUpdateDateTime,
             version.getStarCount,
             version.getComment,
           ],
@@ -88,7 +88,7 @@ class VersionDao {
           <dynamic>[
             versions[0].getId + 1,
             version.getRecipeId,
-            version.getLatestUpdateDate,
+            version.getLatestUpdateDateTime,
             version.getStarCount,
             version.getComment,
           ],
@@ -167,7 +167,7 @@ class VersionDao {
       return Version(
         id: result[i]['id'] as int,
         recipeId: result[i]['recipe_id'] as int,
-        updateDate: result[i]['update_date'] as String,
+        updateDateTime: result[i]['updated_date_time'] as String,
         starCount: result[i]['star_count'] as int,
         comment: result[i]['comment'] as String,
       );
@@ -207,13 +207,14 @@ class VersionDao {
       'UPDATE '
       'Version '
       'SET '
-      'update_date = ?, '
+      'updated_date_time = ?, '
       'star_count = ? '
-      'WHERE id = ? '
+      'WHERE '
+      'id = ? '
       'AND '
       'recipe_id = ?',
       <dynamic>[
-        version.getLatestUpdateDate,
+        version.getLatestUpdateDateTime,
         version.getStarCount,
         version.getId,
         version.getRecipeId,
@@ -230,14 +231,14 @@ class VersionDao {
       'UPDATE '
       'Version '
       'SET '
-      'update_date = ?, '
+      'updated_date_time = ?, '
       'comment = ? '
       'WHERE '
       'id = ? '
       'AND '
       'recipe_id = ?',
       <dynamic>[
-        version.getLatestUpdateDate,
+        version.getLatestUpdateDateTime,
         version.getComment,
         version.getId,
         version.getRecipeId,

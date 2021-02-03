@@ -23,7 +23,7 @@ class Recipe {
 
   // Getter.
   String get getName => name;
-  String get getLatestUpdateDate => latestUpdateDate;
+  String get getLatestUpdateDate => latestUpdateDate.substring(0, 10);
   int get getId => id;
   int get getStarCount => starCount;
   int get getMaxVersion => maxVersion;

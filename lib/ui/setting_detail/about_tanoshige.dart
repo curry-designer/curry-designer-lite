@@ -12,7 +12,7 @@ class _AboutTanoshige extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Curry Designer Liteについて'),
+        title: const Text('Tanoshigeについて'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -23,12 +23,12 @@ class _AboutTanoshige extends StatelessWidget {
                 Container(
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * 0.90,
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: Text(
-                    "Tanoshige",
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: const Text(
+                    'Tanoshige',
                     style: TextStyle(
                       color: Colors.black54,
-                      fontSize: 25.0,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -36,11 +36,11 @@ class _AboutTanoshige extends StatelessWidget {
                 Container(
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * 0.90,
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: Text(
-                    "皆様の日々の暮らしを少しだけ、ラクに楽しくすることを目指し活動しています。\n\n"
-                    "収益よりも成長、やりがいを大切にしながら、アプリ開発など様々なことに挑戦していきます。\n\n"
-                    "皆様と私達の明日が楽しくありますように。",
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: const Text(
+                    '皆様の日々の暮らしを少しだけ、ラクに楽しくすることを目指し活動しています。\n\n'
+                    '収益よりも成長、やりがいを大切にしながら、アプリ開発など様々なことに挑戦していきます。\n\n'
+                    '皆様と私達の明日が楽しくありますように。',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ),

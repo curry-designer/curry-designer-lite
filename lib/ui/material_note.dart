@@ -196,10 +196,7 @@ class _MaterialList extends StatelessWidget {
                                       .read<VersionStore>()
                                       .isTextFieldOpenFalse(),
                                 },
-                                decoration: InputDecoration(
-                                  hintText: item.getOrderMaterial == 1
-                                      ? 'クミンXXX'
-                                      : null,
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       const EdgeInsets.fromLTRB(10, 10, 0, 0),
                                   border: const OutlineInputBorder(),
@@ -236,10 +233,7 @@ class _MaterialList extends StatelessWidget {
                                       .read<VersionStore>()
                                       .isTextFieldOpenFalse(),
                                 },
-                                decoration: InputDecoration(
-                                  hintText: item.getOrderMaterial == 1
-                                      ? '大さじXX'
-                                      : null,
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       const EdgeInsets.fromLTRB(10, 10, 0, 0),
                                   border: const OutlineInputBorder(),

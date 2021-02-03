@@ -82,7 +82,7 @@ class VersionDao {
         result = await txn.rawInsert(
           'INSERT INTO '
           'Version '
-          '(id,recipe_id,update_date,star_count,comment) '
+          '(id,recipe_id,updated_date_time,star_count,comment) '
           'VALUES '
           '(?,?,?,?,?)',
           <dynamic>[

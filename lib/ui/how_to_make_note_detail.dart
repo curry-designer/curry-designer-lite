@@ -79,6 +79,10 @@ class _HowToMakeNoteDetail extends StatelessWidget {
                       border: OutlineInputBorder(),
                     ),
                   ),
+                  RaisedButton(
+                    onPressed: () => {Navigator.pop(context)},
+                    child: const Text('完了'),
+                  ),
                 ],
               ),
             ),

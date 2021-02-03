@@ -16,8 +16,8 @@ class MaterialNoteWidget extends StatelessWidget {
 class _MaterialNoteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Map args = context.select((VersionStore store) => store.getArgs);
-    final maxVersion = args["maxVersion"];
+    final args = context.select((VersionStore store) => store.getArgs);
+    final maxVersion = args['maxVersion'] as int;
     final currentVersion =
         context.select((VersionStore store) => store.getVersion) == null
             ? maxVersion
@@ -26,7 +26,7 @@ class _MaterialNoteWidget extends StatelessWidget {
         context.select((VersionStore store) => store.getMapVersions);
 
     // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
-    FocusScopeNode currentFocus = FocusScope.of(context);
+    final currentFocus = FocusScope.of(context);
 
     // 入力キーボードを使用の際に全体のBottomをあげる。入力キーボードでフォームが隠れてしまうため。
     final bottomSpace = MediaQuery.of(context).viewInsets.bottom;
@@ -48,16 +48,16 @@ class _MaterialNoteWidget extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  padding: EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(top: 10),
                   width: MediaQuery.of(context).size.width * 0.88,
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.fromLTRB(0, 9, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 9, 0, 0),
                         child: Align(
                           alignment: Alignment.topLeft,
-                          child: Text("Version: " + currentVersion.toString(),
-                              style: const TextStyle(fontSize: 25.0)),
+                          child: Text('Version: ${currentVersion.toString()}',
+                              style: const TextStyle(fontSize: 25)),
                         ),
                       ),
                       _MaterialList(
@@ -76,7 +76,8 @@ class _MaterialNoteWidget extends StatelessWidget {
 }
 
 class _MaterialList extends StatelessWidget {
-  _MaterialList({Key key, this.recipeId, this.versionId}) : super(key: key);
+  const _MaterialList({Key key, this.recipeId, this.versionId})
+      : super(key: key);
   final int recipeId;
   final int versionId;
 
@@ -85,9 +86,9 @@ class _MaterialList extends StatelessWidget {
     return FutureBuilder<List<CurryMaterial>>(
       future: context.select((CurryMaterialStore store) =>
           store.fetchCurryMaterials(recipeId: recipeId, versionId: versionId)),
-      builder: (context, AsyncSnapshot<List<CurryMaterial>> snapshot) {
+      builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return ListView.builder(
           shrinkWrap: true,
@@ -97,7 +98,7 @@ class _MaterialList extends StatelessWidget {
             return Column(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Row(
                     // 作り方と順序アイコンを左右に寄せる。
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,25 +106,25 @@ class _MaterialList extends StatelessWidget {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "材料" + item.getOrderMaterial.toString(),
-                          style: const TextStyle(fontSize: 13.0),
+                          '材料${item.getOrderMaterial.toString()}',
+                          style: const TextStyle(fontSize: 13),
                         ),
                       ),
                       Container(
                         child: Row(children: <Widget>[
                           item.getOrderMaterial != snapshot.data.length
                               ? Container(
-                                  padding: const EdgeInsets.all(5.0),
+                                  padding: const EdgeInsets.all(5),
                                   child: GestureDetector(
                                     onTap: () {
                                       context
                                           .read<CurryMaterialStore>()
                                           .updateOrderCurryMaterialDown(
                                               item,
-                                              DateFormat("yyyy.MM.dd")
-                                                  .format(new DateTime.now()));
+                                              DateFormat('yyyy.MM.dd')
+                                                  .format(DateTime.now()));
                                     },
-                                    child: Icon(
+                                    child: const Icon(
                                       const IconData(0xe801,
                                           fontFamily: 'Down'),
                                       size: 20,
@@ -141,10 +142,10 @@ class _MaterialList extends StatelessWidget {
                                           .read<CurryMaterialStore>()
                                           .updateOrderCurryMaterialUp(
                                               item,
-                                              DateFormat("yyyy.MM.dd")
-                                                  .format(new DateTime.now()));
+                                              DateFormat('yyyy.MM.dd')
+                                                  .format(DateTime.now()));
                                     },
-                                    child: Icon(
+                                    child: const Icon(
                                       const IconData(0xe802, fontFamily: 'Up'),
                                       size: 20,
                                       color: Colors.amber,
@@ -160,13 +161,13 @@ class _MaterialList extends StatelessWidget {
                 Container(
                   child: Slidable(
                     key: Key(item.getId.toString()),
-                    actionPane: SlidableDrawerActionPane(),
+                    actionPane: const SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     child: Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.5,
                             height: 40,
                             child: Align(
@@ -177,14 +178,14 @@ class _MaterialList extends StatelessWidget {
                                 onChanged: (value) => context
                                     .read<CurryMaterialStore>()
                                     .updateCurryMaterialName(
-                                      new CurryMaterial(
+                                      CurryMaterial(
                                         materialName: value,
                                         id: item.getId,
                                         recipeId: recipeId,
                                         versionId: versionId,
                                       ),
-                                      DateFormat("yyyy.MM.dd")
-                                          .format(new DateTime.now()),
+                                      DateFormat('yyyy.MM.dd')
+                                          .format(DateTime.now()),
                                     ),
                                 style: const TextStyle(fontSize: 15.0),
                                 onTap: () => {
@@ -195,16 +196,18 @@ class _MaterialList extends StatelessWidget {
                                       .read<VersionStore>()
                                       .isTextFieldOpenFalse(),
                                 },
-                                decoration: const InputDecoration(
-                                  hintText: 'クミン',
+                                decoration: InputDecoration(
+                                  hintText: item.getOrderMaterial == 1
+                                      ? 'クミンXXX'
+                                      : null,
                                   contentPadding:
-                                      EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                  border: OutlineInputBorder(),
+                                      const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                  border: const OutlineInputBorder(),
                                 ),
                               ),
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.35,
                             height: 40,
                             child: Align(
@@ -215,16 +218,16 @@ class _MaterialList extends StatelessWidget {
                                 onChanged: (value) => context
                                     .read<CurryMaterialStore>()
                                     .updateCurryMaterialAmount(
-                                      new CurryMaterial(
+                                      CurryMaterial(
                                         materialAmount: value,
                                         id: item.getId,
                                         recipeId: recipeId,
                                         versionId: versionId,
                                       ),
-                                      DateFormat("yyyy.MM.dd")
-                                          .format(new DateTime.now()),
+                                      DateFormat('yyyy.MM.dd')
+                                          .format(DateTime.now()),
                                     ),
-                                style: const TextStyle(fontSize: 15.0),
+                                style: const TextStyle(fontSize: 15),
                                 onTap: () => {
                                   context
                                       .read<CurryMaterialStore>()
@@ -233,11 +236,13 @@ class _MaterialList extends StatelessWidget {
                                       .read<VersionStore>()
                                       .isTextFieldOpenFalse(),
                                 },
-                                decoration: const InputDecoration(
-                                  hintText: '大さじ2',
+                                decoration: InputDecoration(
+                                  hintText: item.getOrderMaterial == 1
+                                      ? '大さじXX'
+                                      : null,
                                   contentPadding:
-                                      EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                  border: OutlineInputBorder(),
+                                      const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                  border: const OutlineInputBorder(),
                                 ),
                               ),
                             ),
@@ -265,36 +270,38 @@ class _MaterialList extends StatelessWidget {
   }
 
   void _showDialog(int i, CurryMaterial item, BuildContext context) => {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text('削除'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('作り方' + item.getOrderMaterial.toString() + 'を削除しますか？'),
-                  ],
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("CANCEL"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  FlatButton(
-                      child: Text("OK"),
-                      onPressed: () => _deleteRecipe(item, context))
+        showDialog<void>(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: const Text('削除'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('作り方${item.getOrderMaterial.toString()}を削除しますか？'),
                 ],
-              );
-            })
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('CANCEL'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () => _deleteRecipe(item, context))
+              ],
+            );
+          },
+        ),
       };
 
-  void _deleteRecipe(CurryMaterial item, BuildContext context) async => {
+  Future<void> _deleteRecipe(CurryMaterial item, BuildContext context) async =>
+      {
         await context
             .read<CurryMaterialStore>()
             .deleteCurryMaterial(item.id, item.getRecipeId, item.getVersionId),
         await context.read<CurryMaterialStore>().updateOrderCurryMaterial(
-            item, DateFormat("yyyy.MM.dd").format(new DateTime.now())),
+            item, DateFormat('yyyy.MM.dd').format(new DateTime.now())),
         Navigator.pop(context)
       };
 }

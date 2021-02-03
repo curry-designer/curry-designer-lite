@@ -2,9 +2,10 @@ import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/stores/recipe_store.dart';
 import 'package:currydesignerlite/stores/version_store.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/recipe.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../models/recipe.dart';
 
 class RegisterRecipeForm extends StatelessWidget {
   @override
@@ -26,7 +27,7 @@ class _RegisterRecipeForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 入力キーボードをどこを押しても閉じれるようにするための現在のフォーカスを定義。
-    FocusScopeNode currentFocus = FocusScope.of(context);
+    final currentFocus = FocusScope.of(context);
 
     return GestureDetector(
       // 入力キーボードをどこを押しても閉じれるようにする。
@@ -37,12 +38,12 @@ class _RegisterRecipeForm extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('レシピの登録'),
+          title: const Text('レシピの登録'),
         ),
         body: Form(
           key: _formKey,
           child: Container(
-            padding: const EdgeInsets.all(50.0),
+            padding: const EdgeInsets.all(50),
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
@@ -56,16 +57,14 @@ class _RegisterRecipeForm extends StatelessWidget {
                       return value.isEmpty ? 'レシピ名を入力してください。' : null;
                     },
                     onChanged: (String value) {
-                      context
-                          .read<RecipeStore>()
-                          .registerCurryRecipeName(value);
+                      context.read<RecipeStore>().recipeName = value;
                     },
                   ),
                   RaisedButton(
                     onPressed: () => _register(
                         context.read<RecipeStore>().getCurryRecipeName,
                         context),
-                    child: Text('登録'),
+                    child: const Text('登録'),
                   ),
                 ],
               ),
@@ -76,21 +75,21 @@ class _RegisterRecipeForm extends StatelessWidget {
     );
   }
 
-  void _register(String data, BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+  Future<void> _register(String data, BuildContext context) async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
       await context.read<RecipeStore>().createRecipe(Recipe(
             name: data,
           ));
-      List<Recipe> recipes =
-          await context.read<RecipeStore>().fetchLatestRecipesId();
-      int recipeId = recipes[0].getId;
+      final recipes = await context.read<RecipeStore>().fetchLatestRecipesId();
+      final recipeId = recipes[0].getId;
       await context.read<VersionStore>().createVersion(Version(
             recipeId: recipeId,
-            updateDate: DateFormat("yyyy.MM.dd").format(new DateTime.now()),
+            updateDateTime:
+                DateFormat('yyyy.MM.dd HH:mm:ss').format(new DateTime.now()),
             starCount: 0,
           ));
-      Navigator.pushNamed(context, "/");
+      Navigator.pushNamed(context, '/');
     }
   }
 }

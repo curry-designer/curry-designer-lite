@@ -409,11 +409,13 @@ class _Note extends StatelessWidget {
           freeWord: conditionFreeWord,
         ));
     final resultList = context.read<VersionStore>().getFetchResult;
-    context.read<VersionStore>().setVersion(resultList[0].getId);
-    context
-        .read<VersionStore>()
-        .setStarCount(resultList[0].getStarCount, false);
-    context.read<VersionStore>().isHeadPullDownFalse();
+    if (resultList.length != 0) {
+      context.read<VersionStore>().setVersion(resultList[0].getId);
+      context
+          .read<VersionStore>()
+          .setStarCount(resultList[0].getStarCount, false);
+      context.read<VersionStore>().isHeadPullDownFalse();
+    }
   }
 
   void _initializeFilterConditions(BuildContext context) {

@@ -89,7 +89,13 @@ class _RegisterRecipeForm extends StatelessWidget {
                 DateFormat('yyyy.MM.dd HH:mm:ss').format(new DateTime.now()),
             starCount: 0,
           ));
-      Navigator.pushNamed(context, '/');
+
+      Navigator.pushNamed(context, '/note', arguments: {
+        'id': recipeId,
+        'recipeName': recipes[0].getName,
+        'maxVersion': 1,
+        'starCount': 0,
+      });
     }
   }
 }

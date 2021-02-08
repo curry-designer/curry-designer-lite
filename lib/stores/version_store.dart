@@ -1,7 +1,11 @@
 import 'dart:async';
+
+import 'package:currydesignerlite/common/constants.dart';
 import 'package:currydesignerlite/models/version.dart';
 import 'package:currydesignerlite/repository/version_repository.dart';
 import 'package:flutter/material.dart';
+
+import '../common/enums/version_sort_key.dart';
 
 class VersionStore with ChangeNotifier {
   // Get instance of the Repository.
@@ -15,6 +19,13 @@ class VersionStore with ChangeNotifier {
   bool _isTextFieldOpen = true;
   int _currentIndex = 0;
   Map _args;
+  VersionSortKeyEnum _sortKey = VersionSortKeyEnum.VERSION;
+  bool _isFiltered = false;
+  // Fetch結果の先頭を取得するために定義。（Version表示の部分で使用）
+  List<Version> _fetchResult;
+  bool _isHeadPullDown = false;
+  int _conditionStarCount = INITIALIZE_STAR_COUNT;
+  String _conditionFreeWord;
 
   // Getter method.
   Future<List<Version>> get getAllVersions => fetchVersions();
@@ -25,10 +36,28 @@ class VersionStore with ChangeNotifier {
   bool get isTextFieldOpen => _isTextFieldOpen;
   int get getCurrentIndex => _currentIndex;
   Map get getArgs => _args;
+  VersionSortKeyEnum get getSortKey => _sortKey;
+  bool get isFiltered => _isFiltered;
+  List<Version> get getFetchResult => _fetchResult;
+  bool get isHeadPullDown => _isHeadPullDown;
+  int get getConditionStarCount => _conditionStarCount;
+  String get getConditionFreeWord => _conditionFreeWord;
 
   // Fetch all curry recipes.
-  Future<List<Version>> fetchVersions({int recipeId}) async {
-    return await _versionRepository.fetchVersions(recipeId: recipeId);
+  Future<List<Version>> fetchVersions({
+    int recipeId,
+    VersionSortKeyEnum sortKey,
+    int starCount,
+    String freeWord,
+  }) async {
+    // ignore: join_return_with_assignment
+    _fetchResult = await _versionRepository.fetchVersions(
+      recipeId: recipeId,
+      sortKey: sortKey,
+      starCount: starCount,
+      freeWord: freeWord,
+    );
+    return _fetchResult;
   }
 
   // Create new curry item.
@@ -56,9 +85,11 @@ class VersionStore with ChangeNotifier {
     versions.forEach((version) => _map[version.getId] = version);
   }
 
-  void setStarCount(int starCount) {
+  void setStarCount(int starCount, bool isNotify) {
     _starCount = starCount;
-    notifyListeners();
+    if (isNotify) {
+      notifyListeners();
+    }
   }
 
   Future<void> updateStarCount(Version item) async {
@@ -94,5 +125,46 @@ class VersionStore with ChangeNotifier {
 
   void setArgs(Map args) {
     _args = args;
+  }
+
+  void setSortKey(VersionSortKeyEnum sortKey) {
+    _sortKey = sortKey;
+    notifyListeners();
+  }
+
+  void isFilteredTrue() {
+    _isFiltered = true;
+    notifyListeners();
+  }
+
+  void isFilteredFalse() {
+    _isFiltered = false;
+    notifyListeners();
+  }
+
+  void isHeadPullDownTrue() {
+    _isHeadPullDown = true;
+    notifyListeners();
+  }
+
+  void isHeadPullDownFalse() {
+    _isHeadPullDown = false;
+    // notifyListeners();
+  }
+
+  void setVersion(int id) {
+    _version = id;
+  }
+
+  // FilterのConditionのStarCountのセット
+  void setConditionStarCount(int conditionStarCount) {
+    _conditionStarCount = conditionStarCount;
+    notifyListeners();
+  }
+
+  // FilterのConditionのFreeWordのセット
+  void setConditionFreeWord(String conditionFreeWord) {
+    _conditionFreeWord = conditionFreeWord;
+    notifyListeners();
   }
 }

@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:currydesignerlite/common/constants.dart';
+import 'package:quiver/strings.dart';
+
+import '../common/enums/version_sort_key.dart';
 import '../database/database.dart';
 import '../models/version.dart';
 
@@ -147,17 +151,239 @@ class VersionDao {
   }
 
   //Fetch all versions.
-  Future<List<Version>> fetchVersions({int recipeId}) async {
+  Future<List<Version>> fetchVersions({
+    int recipeId,
+    VersionSortKeyEnum sortKey,
+    int starCount,
+    String freeWord,
+  }) async {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result;
+
+    const fetchQuery = '''
+    SELECT 
+    * 
+    FROM 
+    Version 
+    WHERE 
+    recipe_id = ? 
+     ''';
+
+    const fetchQueryForStarCountAndFreeWord = '''
+    AND 
+    star_count = ? 
+    AND
+    comment LIKE ? 
+     ''';
+
+    const fetchQueryForStarCount = '''
+    AND 
+    star_count = ? 
+     ''';
+
+    const fetchQueryForFreeWord = '''
+    AND 
+    comment LIKE ? 
+     ''';
+
+    // FreeWordをLIKE句で使えるように加工する
+    String freeWordForLike;
+    if (isNotEmpty(freeWord)) {
+      freeWordForLike = '%$freeWord%';
+    }
+
     if (recipeId != null) {
-      result = await db.rawQuery(
-        'SELECT * FROM Version WHERE recipe_id = ? ORDER BY id DESC',
-        <int>[
-          recipeId,
-        ],
-      );
+      switch (sortKey) {
+        case VersionSortKeyEnum.VERSION:
+          if (!(starCount == INITIALIZE_STAR_COUNT ||
+              freeWordForLike == null)) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForStarCountAndFreeWord'
+              'ORDER BY '
+              'id DESC',
+              <dynamic>[
+                recipeId,
+                starCount,
+                freeWordForLike,
+              ],
+            );
+            break;
+          }
+
+          if (starCount != INITIALIZE_STAR_COUNT) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForStarCount'
+              'ORDER BY '
+              'id DESC',
+              <dynamic>[
+                recipeId,
+                starCount,
+              ],
+            );
+            break;
+          }
+
+          if (freeWordForLike != null) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForFreeWord'
+              'ORDER BY '
+              'id DESC',
+              <dynamic>[
+                recipeId,
+                freeWordForLike,
+              ],
+            );
+            break;
+          }
+
+          result = await db.rawQuery(
+            '$fetchQuery'
+            'ORDER BY '
+            'id DESC',
+            <dynamic>[
+              recipeId,
+            ],
+          );
+          break;
+
+        case VersionSortKeyEnum.STAR_COUNT:
+          if (!(starCount == INITIALIZE_STAR_COUNT ||
+              freeWordForLike == null)) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForStarCountAndFreeWord'
+              'ORDER BY '
+              'star_count DESC, '
+              'id DESC',
+              <dynamic>[
+                recipeId,
+                starCount,
+                freeWordForLike,
+              ],
+            );
+            break;
+          }
+
+          if (starCount != INITIALIZE_STAR_COUNT) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForStarCount'
+              'ORDER BY '
+              'star_count DESC, '
+              'id DESC',
+              <dynamic>[
+                recipeId,
+                starCount,
+              ],
+            );
+            break;
+          }
+
+          if (freeWordForLike != null) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForFreeWord'
+              'ORDER BY '
+              'star_count DESC, '
+              'id DESC',
+              <dynamic>[
+                recipeId,
+                freeWordForLike,
+              ],
+            );
+            break;
+          }
+
+          result = await db.rawQuery(
+            '$fetchQuery'
+            'ORDER BY '
+            'star_count DESC, '
+            'id DESC',
+            <dynamic>[
+              recipeId,
+            ],
+          );
+          break;
+
+        // result = await db.rawQuery(
+        //   '$fetchQuery'
+        //   'ORDER BY '
+        //   'star_count DESC, '
+        //   'id DESC',
+        //   <int>[
+        //     recipeId,
+        //   ],
+        // );
+        // break;
+
+        case VersionSortKeyEnum.UPDATED_DATE_TIME:
+          if (!(starCount == INITIALIZE_STAR_COUNT ||
+              freeWordForLike == null)) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForStarCountAndFreeWord'
+              'ORDER BY '
+              'updated_date_time DESC',
+              <dynamic>[
+                recipeId,
+                starCount,
+                freeWordForLike,
+              ],
+            );
+            break;
+          }
+
+          if (starCount != INITIALIZE_STAR_COUNT) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForStarCount'
+              'ORDER BY '
+              'updated_date_time DESC',
+              <dynamic>[
+                recipeId,
+                starCount,
+              ],
+            );
+            break;
+          }
+
+          if (freeWordForLike != null) {
+            result = await db.rawQuery(
+              '$fetchQuery'
+              '$fetchQueryForFreeWord'
+              'ORDER BY '
+              'updated_date_time DESC',
+              <dynamic>[
+                recipeId,
+                freeWordForLike,
+              ],
+            );
+            break;
+          }
+          result = await db.rawQuery(
+            '$fetchQuery'
+            'ORDER BY '
+            'updated_date_time DESC',
+            <dynamic>[
+              recipeId,
+            ],
+          );
+          break;
+
+        // result = await db.rawQuery(
+        //   '$fetchQuery'
+        //   'ORDER BY '
+        //   'updated_date_time DESC',
+        //   <int>[
+        //     recipeId,
+        //   ],
+        // );
+        // break;
+      }
     } else {
       result = await db.rawQuery('SELECT * FROM Version');
     }

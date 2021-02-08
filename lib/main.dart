@@ -8,6 +8,7 @@ import 'ui/home.dart';
 import 'ui/how_to_make_note_detail.dart';
 import 'ui/note.dart';
 import 'ui/register_recipe_form.dart';
+import 'ui/version_filter.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       // MaterialApp contains our top-level Navigator
       initialRoute: '/',
       routes: {
-        '/': (BuildContext context) => Home(title: 'Curry Note'),
+        '/': (BuildContext context) => const Home(title: 'Curry Note'),
         '/setting': (BuildContext context) => Setting(),
         '/note': (BuildContext context) => Note(),
         '/register-recipe': (BuildContext context) => RegisterRecipeForm(),
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
             AboutCurryDesignerLite(),
         '/about-tanoshige': (BuildContext context) => AboutTanoshige(),
         '/terms-of-use': (BuildContext context) => TermsOfUse(),
+        '/version-filter': (BuildContext context) => VersionFilter(),
       },
     );
   }

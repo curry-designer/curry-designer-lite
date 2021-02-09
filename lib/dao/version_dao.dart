@@ -309,17 +309,6 @@ class VersionDao {
           );
           break;
 
-        // result = await db.rawQuery(
-        //   '$fetchQuery'
-        //   'ORDER BY '
-        //   'star_count DESC, '
-        //   'id DESC',
-        //   <int>[
-        //     recipeId,
-        //   ],
-        // );
-        // break;
-
         case VersionSortKeyEnum.UPDATED_DATE_TIME:
           if (!(starCount == INITIALIZE_STAR_COUNT ||
               freeWordForLike == null)) {
@@ -373,16 +362,6 @@ class VersionDao {
             ],
           );
           break;
-
-        // result = await db.rawQuery(
-        //   '$fetchQuery'
-        //   'ORDER BY '
-        //   'updated_date_time DESC',
-        //   <int>[
-        //     recipeId,
-        //   ],
-        // );
-        // break;
       }
     } else {
       result = await db.rawQuery('SELECT * FROM Version');

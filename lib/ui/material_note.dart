@@ -53,11 +53,11 @@ class _MaterialNoteWidget extends StatelessWidget {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.fromLTRB(0, 9, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 9, 0, 5),
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text('Version: ${currentVersion.toString()}',
-                              style: const TextStyle(fontSize: 25)),
+                              style: const TextStyle(fontSize: 20)),
                         ),
                       ),
                       _MaterialList(

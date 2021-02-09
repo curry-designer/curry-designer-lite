@@ -49,6 +49,7 @@ class VersionStore with ChangeNotifier {
     VersionSortKeyEnum sortKey,
     int starCount,
     String freeWord,
+    bool isNotifyListener,
   }) async {
     // ignore: join_return_with_assignment
     _fetchResult = await _versionRepository.fetchVersions(
@@ -57,6 +58,9 @@ class VersionStore with ChangeNotifier {
       starCount: starCount,
       freeWord: freeWord,
     );
+    if (isNotifyListener != null && isNotifyListener) {
+      notifyListeners();
+    }
     return _fetchResult;
   }
 

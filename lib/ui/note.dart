@@ -60,12 +60,14 @@ class _Note extends StatelessWidget {
         context.select((VersionStore store) => store.getConditionFreeWord);
 
     return FutureBuilder<List<Version>>(
-      future: context.select((VersionStore store) => store.fetchVersions(
-            recipeId: id,
-            sortKey: _sort,
-            starCount: _conditionStarCount,
-            freeWord: _conditionFreeWord,
-          )),
+      future: context.select(
+        (VersionStore store) => store.fetchVersions(
+          recipeId: id,
+          sortKey: _sort,
+          starCount: _conditionStarCount,
+          freeWord: _conditionFreeWord,
+        ),
+      ),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -76,53 +78,6 @@ class _Note extends StatelessWidget {
             !context.select((VersionStore store) => store.isFiltered)) {
           _setOrderHeadContents(
               context, id, _sort, _conditionStarCount, _conditionFreeWord);
-        }
-
-        if (snapshot.data.length == 0) {
-          return Scaffold(
-            appBar: _appBar(
-              id,
-              versionMap[currentVersion],
-              maxVersion,
-              // starCount,
-              recipeName,
-              currentIndex,
-              context,
-              _sort,
-            ),
-            body: context.select((VersionStore store) => store.isFiltered)
-                ? VersionFilter()
-                : const Center(
-                    child: Text(
-                      '検索結果が0件です。',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-            bottomNavigationBar:
-                context.select((VersionStore store) => store.isFiltered)
-                    ? BottomAppBar(
-                        child: ElevatedButton(
-                          onPressed: () => {
-                            _setFilterConditions(context),
-                            _initializeFilterConditions(context),
-                            context.read<VersionStore>().isFilteredFalse(),
-                          },
-                          child: const Text(
-                            '絞り込む',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40),
-                            primary: Colors.amber,
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
-                      )
-                    : null,
-          );
         }
 
         // Convert version list to map.
@@ -164,9 +119,9 @@ class _Note extends StatelessWidget {
                   ? BottomAppBar(
                       child: ElevatedButton(
                         onPressed: () => {
-                          _setFilterConditions(context),
-                          _initializeFilterConditions(context),
-                          context.read<VersionStore>().isFilteredFalse(),
+                          // _setFilterConditions(context),
+                          // _initializeFilterConditions(context),
+                          checkFilterResultAndExecuteGoBackVersion(context, id),
                         },
                         child: const Text(
                           '絞り込む',
@@ -434,4 +389,43 @@ class _Note extends StatelessWidget {
         .read<VersionStore>()
         .setConditionFreeWord(context.read<VersionFilterStore>().getFreeWord);
   }
+
+  Future<void> checkFilterResultAndExecuteGoBackVersion(
+      BuildContext context, int id) async {
+    await context.read<VersionStore>().fetchVersions(
+          recipeId: id,
+          sortKey: context.read<VersionFilterStore>().getSortKey,
+          starCount: context.read<VersionFilterStore>().getStarCount,
+          freeWord: context.read<VersionFilterStore>().getFreeWord,
+          isNotifyListener: true,
+        );
+
+    final resultList = context.read<VersionStore>().getFetchResult;
+    if (resultList.length != 0) {
+      _setFilterConditions(context);
+      _initializeFilterConditions(context);
+      context.read<VersionStore>().isFilteredFalse();
+    } else {
+      _initializeFilterConditions(context);
+      _showDialogForFilter(context);
+    }
+  }
+
+  void _showDialogForFilter(BuildContext context) => {
+        showDialog<void>(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              //title: const Text('レシピの更新'),
+              content: const Text('検索結果が0件です'),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('OK'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            );
+          },
+        )
+      };
 }

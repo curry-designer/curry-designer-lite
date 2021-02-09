@@ -24,9 +24,6 @@ class Note extends StatelessWidget {
       ChangeNotifierProvider<VersionStore>(
         create: (context) => VersionStore(),
       ),
-      ChangeNotifierProvider<HowToMakeStore>(
-        create: (context) => HowToMakeStore(),
-      ),
       ChangeNotifierProvider<CurryMaterialStore>(
         create: (context) => CurryMaterialStore(),
       ),

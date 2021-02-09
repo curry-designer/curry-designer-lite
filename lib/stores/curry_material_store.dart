@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:currydesignerlite/models/curry_material.dart';
 import 'package:currydesignerlite/repository/curry_material_repository.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,11 @@ class CurryMaterialStore with ChangeNotifier {
   final _materialRepository = CurryMaterialRepository();
 
   // Initialize version.
-  bool isReverse = false;
+  bool _isReverse = false;
 
   // Getter method.
   Future<List<CurryMaterial>> get getAllCurryMaterials => fetchCurryMaterials();
-  bool get getReverseFlag => isReverse;
+  bool get getReverseFlag => _isReverse;
 
   // すべての材料を取得。
   Future<List<CurryMaterial>> fetchCurryMaterials(
@@ -23,7 +24,7 @@ class CurryMaterialStore with ChangeNotifier {
 
   // 材料の追加。
   Future<void> createCurryMaterial(CurryMaterial item) async {
-    isReverse = true;
+    _isReverse = true;
     await _materialRepository.createCurryMaterial(item);
     fetchCurryMaterials();
     notifyListeners();
@@ -86,13 +87,13 @@ class CurryMaterialStore with ChangeNotifier {
 
   // ReverseFlagをTrueに変更
   void changeReverseFlagTrue() {
-    isReverse = true;
+    _isReverse = true;
     notifyListeners();
   }
 
   // ReverseFlagをFalseに変更
   void changeReverseFlagFalse() {
-    isReverse = false;
+    _isReverse = false;
     notifyListeners();
   }
 }

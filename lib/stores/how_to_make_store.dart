@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:currydesignerlite/models/how_to_make.dart';
 import 'package:currydesignerlite/repository/how_to_make_repository.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,13 @@ class HowToMakeStore with ChangeNotifier {
   final _howToMakeRepository = HowToMakeRepository();
 
   // Initialize version.
-  bool isReverse = false;
+  bool _isReverse = false;
+  bool _isHowToMakeDetailPage = false;
 
   // Getter method.
   Future<List<HowToMake>> get getAllHowToMakes => fetchHowToMakes();
-  bool get getReverseFlag => isReverse;
+  bool get getReverseFlag => _isReverse;
+  bool get getHowToMakePageDetailFlag => _isHowToMakeDetailPage;
 
   // すべての作り方を取得。
   Future<List<HowToMake>> fetchHowToMakes({int recipeId, int versionId}) async {
@@ -22,7 +25,7 @@ class HowToMakeStore with ChangeNotifier {
 
   // 作り方の追加。
   Future<void> createHowToMake(HowToMake item) async {
-    isReverse = true;
+    _isReverse = true;
     await _howToMakeRepository.createHowToMake(item);
     fetchHowToMakes();
     notifyListeners();
@@ -75,13 +78,25 @@ class HowToMakeStore with ChangeNotifier {
 
   // ReverseFlagをTrueに変更
   void changeReverseFlagTrue() {
-    isReverse = true;
+    _isReverse = true;
     notifyListeners();
   }
 
   // ReverseFlagをFalseに変更
   void changeReverseFlagFalse() {
-    isReverse = false;
+    _isReverse = false;
+    notifyListeners();
+  }
+
+  // HowToMakePageFlagをTrueに変更
+  void changeHowToMakePageDetailFlagTrue() {
+    _isHowToMakeDetailPage = true;
+    notifyListeners();
+  }
+
+  // HowToMakePageFlagをFalseに変更
+  void changeHowToMakePageDetailFlagFalse() {
+    _isHowToMakeDetailPage = false;
     notifyListeners();
   }
 }

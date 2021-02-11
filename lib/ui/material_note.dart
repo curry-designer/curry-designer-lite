@@ -135,7 +135,7 @@ class _MaterialList extends StatelessWidget {
                               : Container(),
                           item.getOrderMaterial != 1
                               ? Container(
-                                  padding: const EdgeInsets.all(5.0),
+                                  padding: const EdgeInsets.all(5),
                                   child: GestureDetector(
                                     onTap: () {
                                       context
@@ -272,7 +272,7 @@ class _MaterialList extends StatelessWidget {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text('作り方${item.getOrderMaterial.toString()}を削除しますか？'),
+                  Text('材料${item.getOrderMaterial.toString()}を削除しますか？'),
                 ],
               ),
               actions: <Widget>[

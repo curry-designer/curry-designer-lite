@@ -53,12 +53,12 @@ class RecipeStore with ChangeNotifier {
     _isSearch = true;
   }
 
-  // Set search result.
+  // SearchFlagをTrueに変更.
   void changeSearchFlag() {
     _isSearch = true;
   }
 
-  // Set search result.
+  // Set Fetch result.
   void setFetchResult(List<Recipe> fetchResult) {
     _fetchResult = fetchResult;
   }

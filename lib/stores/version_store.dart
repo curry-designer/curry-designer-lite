@@ -156,6 +156,7 @@ class VersionStore with ChangeNotifier {
     // notifyListeners();
   }
 
+  // VersionのSetter
   void setVersion(int id) {
     _version = id;
   }

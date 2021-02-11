@@ -10,12 +10,10 @@ class HowToMakeStore with ChangeNotifier {
 
   // Initialize version.
   bool _isReverse = false;
-  bool _isHowToMakeDetailPage = false;
 
   // Getter method.
   Future<List<HowToMake>> get getAllHowToMakes => fetchHowToMakes();
   bool get getReverseFlag => _isReverse;
-  bool get getHowToMakePageDetailFlag => _isHowToMakeDetailPage;
 
   // すべての作り方を取得。
   Future<List<HowToMake>> fetchHowToMakes({int recipeId, int versionId}) async {
@@ -85,18 +83,6 @@ class HowToMakeStore with ChangeNotifier {
   // ReverseFlagをFalseに変更
   void changeReverseFlagFalse() {
     _isReverse = false;
-    notifyListeners();
-  }
-
-  // HowToMakePageFlagをTrueに変更
-  void changeHowToMakePageDetailFlagTrue() {
-    _isHowToMakeDetailPage = true;
-    notifyListeners();
-  }
-
-  // HowToMakePageFlagをFalseに変更
-  void changeHowToMakePageDetailFlagFalse() {
-    _isHowToMakeDetailPage = false;
     notifyListeners();
   }
 }

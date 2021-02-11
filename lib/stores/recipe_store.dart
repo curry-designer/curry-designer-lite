@@ -14,7 +14,6 @@ class RecipeStore with ChangeNotifier {
   String _searchResult = '';
   bool _isSearch = false;
   List<Recipe> _fetchResult;
-  bool _isZeroResult = false;
 
   // Getter method.
   Future<List<Recipe>> get getRecipes => fetchRecipes();
@@ -22,7 +21,6 @@ class RecipeStore with ChangeNotifier {
   String get getSearchResult => _searchResult;
   bool get isSearch => _isSearch;
   List<Recipe> get getFetchResult => _fetchResult;
-  bool get isZeroResult => _isZeroResult;
 
   // Fetch all curry recipes.
   Future<List<Recipe>> fetchRecipes({String query}) async {
@@ -63,11 +61,5 @@ class RecipeStore with ChangeNotifier {
   // Set search result.
   void setFetchResult(List<Recipe> fetchResult) {
     _fetchResult = fetchResult;
-    // notifyListeners();
-  }
-
-  // Set search result.
-  void changeZeroResultFlag() {
-    _isZeroResult = true;
   }
 }

@@ -20,9 +20,6 @@ class Home extends StatelessWidget {
       ChangeNotifierProvider<VersionStore>(
         create: (context) => VersionStore(),
       ),
-      // ChangeNotifierProvider<HowToMakeStore>(
-      //   create: (context) => HowToMakeStore(),
-      // ),
       ChangeNotifierProvider<CurryMaterialStore>(
         create: (context) => CurryMaterialStore(),
       )
@@ -125,27 +122,6 @@ class _Home extends StatelessWidget {
       context.read<RecipeStore>().changeSearchFlag();
     }
   }
-
-  // void _showDialogForFilter(BuildContext context) => {
-  //       showDialog<void>(
-  //         context: context,
-  //         builder: (_) {
-  //           return Container(
-  //             color: Colors.deepOrange,
-  //             // alignment: Alignment.center,
-  //             child: AlertDialog(
-  //               title: const Text('検索結果が0件です'),
-  //               actions: <Widget>[
-  //                 FlatButton(
-  //                   child: const Text('OK'),
-  //                   onPressed: () => Navigator.pop(context),
-  //                 ),
-  //               ],
-  //             ),
-  //           );
-  //         },
-  //       )
-  //     };
 }
 
 class ShowCurryItemList extends StatelessWidget {

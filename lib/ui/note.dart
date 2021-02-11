@@ -70,7 +70,7 @@ class _Note extends StatelessWidget {
       ),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: Text(''));
         }
 
         // ソート順の先頭のVersionを初期表示するためにCurrentVersionをセットする.

@@ -41,7 +41,7 @@ class _HowToMakeNote extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text('Version: ${currentVersion.toString()}',
-                          style: const TextStyle(fontSize: 25)),
+                          style: const TextStyle(fontSize: 20)),
                     ),
                   ),
                   _HowToMakeList(
@@ -70,7 +70,7 @@ class _HowToMakeList extends StatelessWidget {
           store.fetchHowToMakes(recipeId: recipeId, versionId: versionId)),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: Text(''));
         }
         return ListView.builder(
           shrinkWrap: true,
@@ -89,7 +89,7 @@ class _HowToMakeList extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Text(
                           '作り方${item.getOrderHowToMake.toString()}',
-                          style: const TextStyle(fontSize: 15),
+                          style: const TextStyle(fontSize: 13),
                         ),
                       ),
                       Container(

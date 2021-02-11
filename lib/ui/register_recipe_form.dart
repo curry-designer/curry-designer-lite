@@ -40,33 +40,53 @@ class _RegisterRecipeForm extends StatelessWidget {
         appBar: AppBar(
           title: const Text('レシピの登録'),
         ),
-        body: Form(
-          key: _formKey,
+        body: Align(
+          alignment: Alignment.topCenter,
           child: Container(
-            padding: const EdgeInsets.all(50),
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    maxLength: 100,
-                    decoration: const InputDecoration(
-                      hintText: 'バターチキンカレー etc...',
-                      labelText: 'レシピ名',
-                    ),
-                    validator: (String value) {
-                      return value.isEmpty ? 'レシピ名を入力してください。' : null;
-                    },
-                    onChanged: (String value) {
-                      context.read<RecipeStore>().recipeName = value;
-                    },
+            padding: const EdgeInsets.only(top: 10),
+            width: MediaQuery.of(context).size.width * 0.88,
+            child: Form(
+              key: _formKey,
+              child: Container(
+                //padding: const EdgeInsets.all(50),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        maxLength: 100,
+                        decoration: const InputDecoration(
+                          labelText: 'レシピ名',
+                        ),
+                        validator: (String value) {
+                          return value.isEmpty ? 'レシピ名を入力してください。' : null;
+                        },
+                        onChanged: (String value) {
+                          context.read<RecipeStore>().recipeName = value;
+                        },
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: ElevatedButton(
+                          onPressed: () => _register(
+                              context.read<RecipeStore>().getCurryRecipeName,
+                              context),
+                          child: const Text(
+                            '登録',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(40),
+                            primary: Colors.amber,
+                            shape: const StadiumBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  RaisedButton(
-                    onPressed: () => _register(
-                        context.read<RecipeStore>().getCurryRecipeName,
-                        context),
-                    child: const Text('登録'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -89,7 +109,13 @@ class _RegisterRecipeForm extends StatelessWidget {
                 DateFormat('yyyy.MM.dd HH:mm:ss').format(new DateTime.now()),
             starCount: 0,
           ));
-      Navigator.pushNamed(context, '/');
+
+      Navigator.pushNamed(context, '/note', arguments: {
+        'id': recipeId,
+        'recipeName': recipes[0].getName,
+        'maxVersion': 1,
+        'starCount': 0,
+      });
     }
   }
 }

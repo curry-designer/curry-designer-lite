@@ -12,7 +12,7 @@ class _AboutCurryDesignerLite extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Curry Designer Liteについて'),
+        title: const Text('Curry Noteについて'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -23,12 +23,12 @@ class _AboutCurryDesignerLite extends StatelessWidget {
                 Container(
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * 0.90,
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: Text(
-                    "Curry Designer Lite",
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: const Text(
+                    'Curry Note',
                     style: TextStyle(
                       color: Colors.black54,
-                      fontSize: 25.0,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -36,15 +36,15 @@ class _AboutCurryDesignerLite extends StatelessWidget {
                 Container(
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * 0.90,
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: Text(
-                    "本アプリは"
-                    "「理想のカレーを日々探究する皆様のお役に立てるようなメモアプリ」"
-                    "を目指しリリースいたしました。\n\n"
-                    "皆様のカレー作りに対する工夫のメモや振り返りが、"
-                    "ラクに楽しく行えるようになったら嬉しいです。\n\n"
-                    "何か不備などございましたらアプリストアにてコメントいただけますと幸いです。\n",
-                    style: TextStyle(fontSize: 16.0),
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: const Text(
+                    '本アプリは'
+                    '「理想のカレーを日々探究する皆様のお役に立てるようなメモアプリ」'
+                    'を目指しリリースいたしました。\n\n'
+                    '皆様のカレー作りに対する工夫のメモや振り返りが、'
+                    'ラクに楽しく行えるようになったら嬉しいです。\n\n'
+                    '何か不備・要望などございましたら「アプリストア」や「お問い合わせ」にてコメントいただけますと幸いです。\n',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ],

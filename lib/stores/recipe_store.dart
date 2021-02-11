@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../models/recipe.dart';
 import '../repository/recipe_repository.dart';
 
@@ -11,17 +13,14 @@ class RecipeStore with ChangeNotifier {
   String recipeName = '';
   String _searchResult = '';
   bool _isSearch = false;
+  List<Recipe> _fetchResult;
 
   // Getter method.
   Future<List<Recipe>> get getRecipes => fetchRecipes();
   String get getCurryRecipeName => recipeName;
   String get getSearchResult => _searchResult;
   bool get isSearch => _isSearch;
-
-  // // Setter method.
-  // set registerCurryRecipeName(String name) {
-  //   _recipeName = name;
-  // }
+  List<Recipe> get getFetchResult => _fetchResult;
 
   // Fetch all curry recipes.
   Future<List<Recipe>> fetchRecipes({String query}) async {
@@ -52,5 +51,15 @@ class RecipeStore with ChangeNotifier {
   void setSearchResult(String searchResult) {
     _searchResult = searchResult;
     _isSearch = true;
+  }
+
+  // SearchFlagをTrueに変更.
+  void changeSearchFlag() {
+    _isSearch = true;
+  }
+
+  // Set Fetch result.
+  void setFetchResult(List<Recipe> fetchResult) {
+    _fetchResult = fetchResult;
   }
 }

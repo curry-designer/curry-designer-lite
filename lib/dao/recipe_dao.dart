@@ -52,7 +52,7 @@ class RecipeDao {
           'r.id = v.recipe_id '
           'GROUP BY '
           'r.id '
-          'Order BY '
+          'ORDER BY '
           'latest_update_date DESC ');
     }
 

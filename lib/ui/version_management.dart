@@ -63,27 +63,32 @@ class _VersionManagement extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           DropdownButton(
-                            hint: Text('Version: ${currentVersion.toString()}'),
-                            value: currentVersion,
-                            items: snapshot.data.map((item) {
-                              return DropdownMenuItem(
-                                child: Text(
-                                  'Version: ${item.getId.toString()}',
-                                  style: const TextStyle(fontSize: 25),
-                                ),
-                                value: item.getId,
-                              );
-                            }).toList(),
-                            onChanged: (int value) => context
-                                .read<VersionStore>()
-                                .setDropdownVersion(value),
-                          ),
+                              hint:
+                                  Text('Version: ${currentVersion.toString()}'),
+                              value: currentVersion,
+                              items: snapshot.data.map((item) {
+                                return DropdownMenuItem(
+                                  child: Text(
+                                    'Version: ${item.getId.toString()}',
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  value: item.getId,
+                                );
+                              }).toList(),
+                              onChanged: (int value) => {
+                                    context
+                                        .read<VersionStore>()
+                                        .setDropdownVersion(value),
+                                    // context
+                                    //     .read<VersionStore>()
+                                    //     .setCurrentVersion(value),
+                                  }),
                           Container(
                             child: Row(
                               children: <Widget>[
                                 Container(
                                   padding: const EdgeInsets.all(0),
-                                  width: 30.0,
+                                  width: 30,
                                   child: IconButton(
                                     padding: const EdgeInsets.all(0),
                                     icon: Icon(
@@ -134,7 +139,7 @@ class _VersionManagement extends StatelessWidget {
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(0),
-                                  width: 30.0,
+                                  width: 30,
                                   child: IconButton(
                                     padding: const EdgeInsets.all(0),
                                     icon: Icon(
@@ -176,7 +181,7 @@ class _VersionManagement extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
-                              '更新日: ${versionMap[currentVersion].getLatestUpdateDateTime}'),
+                              '更新日時: ${versionMap[currentVersion].getLatestUpdateDateTime}'),
                         ),
                       ),
                       const Padding(
@@ -230,7 +235,7 @@ class _VersionManagement extends StatelessWidget {
 
   void updateStarCount(Version version, int i, BuildContext context) {
     // 星の数をセットする。
-    context.read<VersionStore>().setStarCount(i);
+    context.read<VersionStore>().setStarCount(i, true);
 
     // DBの星の数をUpdateする。
     context.read<VersionStore>().updateStarCount(

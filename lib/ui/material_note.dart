@@ -53,11 +53,11 @@ class _MaterialNoteWidget extends StatelessWidget {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.fromLTRB(0, 9, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 9, 0, 5),
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text('Version: ${currentVersion.toString()}',
-                              style: const TextStyle(fontSize: 25)),
+                              style: const TextStyle(fontSize: 20)),
                         ),
                       ),
                       _MaterialList(
@@ -88,7 +88,7 @@ class _MaterialList extends StatelessWidget {
           store.fetchCurryMaterials(recipeId: recipeId, versionId: versionId)),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: Text(''));
         }
         return ListView.builder(
           shrinkWrap: true,
@@ -135,7 +135,7 @@ class _MaterialList extends StatelessWidget {
                               : Container(),
                           item.getOrderMaterial != 1
                               ? Container(
-                                  padding: const EdgeInsets.all(5.0),
+                                  padding: const EdgeInsets.all(5),
                                   child: GestureDetector(
                                     onTap: () {
                                       context
@@ -196,10 +196,7 @@ class _MaterialList extends StatelessWidget {
                                       .read<VersionStore>()
                                       .isTextFieldOpenFalse(),
                                 },
-                                decoration: InputDecoration(
-                                  hintText: item.getOrderMaterial == 1
-                                      ? 'クミンXXX'
-                                      : null,
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       const EdgeInsets.fromLTRB(10, 10, 0, 0),
                                   border: const OutlineInputBorder(),
@@ -236,10 +233,7 @@ class _MaterialList extends StatelessWidget {
                                       .read<VersionStore>()
                                       .isTextFieldOpenFalse(),
                                 },
-                                decoration: InputDecoration(
-                                  hintText: item.getOrderMaterial == 1
-                                      ? '大さじXX'
-                                      : null,
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       const EdgeInsets.fromLTRB(10, 10, 0, 0),
                                   border: const OutlineInputBorder(),
@@ -278,7 +272,7 @@ class _MaterialList extends StatelessWidget {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text('作り方${item.getOrderMaterial.toString()}を削除しますか？'),
+                  Text('材料${item.getOrderMaterial.toString()}を削除しますか？'),
                 ],
               ),
               actions: <Widget>[

@@ -20,9 +20,6 @@ class Home extends StatelessWidget {
       ChangeNotifierProvider<VersionStore>(
         create: (context) => VersionStore(),
       ),
-      ChangeNotifierProvider<HowToMakeStore>(
-        create: (context) => HowToMakeStore(),
-      ),
       ChangeNotifierProvider<CurryMaterialStore>(
         create: (context) => CurryMaterialStore(),
       )
@@ -85,8 +82,8 @@ class _Home extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: TextField(
-                    onChanged: (value) => {
-                      context.read<RecipeStore>().setSearchResult(value),
+                    onSubmitted: (value) => {
+                      _checkSearchParameter(context, value),
                     },
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.search),
@@ -98,7 +95,7 @@ class _Home extends StatelessWidget {
                 ),
                 Expanded(
                   child: ShowCurryItemList(),
-                )
+                ),
               ],
             ),
           ),
@@ -112,6 +109,19 @@ class _Home extends StatelessWidget {
       ),
     );
   }
+
+  void _checkSearchParameter(BuildContext context, String parameter) {
+    final fetchResult = context.read<RecipeStore>().getFetchResult;
+    final fetchFilterResult =
+        fetchResult.where((item) => item.getName.contains(parameter)).toList();
+    if (fetchFilterResult.length == 0) {
+      //_showDialogForFilter(context);
+      context.read<RecipeStore>().setSearchResult(parameter);
+    } else {
+      context.read<RecipeStore>().setSearchResult(parameter);
+      context.read<RecipeStore>().changeSearchFlag();
+    }
+  }
 }
 
 class ShowCurryItemList extends StatelessWidget {
@@ -124,75 +134,88 @@ class ShowCurryItemList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
+        if (snapshot.connectionState == ConnectionState.none ||
+            snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Text(''),
+          );
+        }
+
         // Filtered by search result.
         final searchResult =
             context.select((RecipeStore store) => store.getSearchResult);
-        snapshot.data
-            .removeWhere((item) => !item.getName.contains(searchResult));
 
-        if (snapshot.data.length == 0) {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            child: Text(
-              context.select((RecipeStore store) => store.isSearch)
-                  ? '検索結果が0件です'
-                  : '',
-              style: const TextStyle(fontSize: 20),
-            ),
-          );
-        } else {
-          return ListView.builder(
-            padding: const EdgeInsets.only(top: 16),
-            itemBuilder: (context, i) {
-              final item = snapshot.data[i];
-              return Slidable(
-                key: Key(item.getName),
-                actionPane: const SlidableDrawerActionPane(),
-                actionExtentRatio: 0.25,
-                child: Container(
-                  color: Colors.white,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/note',
-                        arguments: {
-                          'id': item.id,
-                          'recipeName': item.getName,
-                          'maxVersion': item.getMaxVersion,
-                          'starCount': item.getStarCount,
-                        },
-                      );
-                    },
-                    child: Card(
-                      child: ListTile(
-                        leading: const Icon(
-                          IconData(0xe800, fontFamily: 'Curry'),
-                          color: Color.fromRGBO(105, 105, 105, 1),
-                          size: 50,
-                        ),
-                        title: Text(
-                          item.getName,
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                        subtitle: Text('更新日: ${item.getLatestUpdateDate}'),
+        List<Recipe> filteredSnapshotData = snapshot.data;
+        if (snapshot.connectionState == ConnectionState.done) {
+          context.read<RecipeStore>().setFetchResult(snapshot.data);
+          filteredSnapshotData = snapshot.data
+              .where((item) => item.getName.contains(searchResult))
+              .toList();
+
+          if (filteredSnapshotData.length == 0) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+              child: Text(
+                context.select((RecipeStore store) => store.isSearch)
+                    ? '検索結果が0件です'
+                    : '',
+                style: const TextStyle(fontSize: 18),
+              ),
+            );
+          }
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.only(top: 16),
+          itemBuilder: (_, i) {
+            final item = filteredSnapshotData[i];
+            return Slidable(
+              key: Key(item.getName),
+              actionPane: const SlidableDrawerActionPane(),
+              actionExtentRatio: 0.25,
+              child: Container(
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/note',
+                      arguments: {
+                        'id': item.id,
+                        'recipeName': item.getName,
+                        'maxVersion': item.getMaxVersion,
+                        'starCount': item.getStarCount,
+                      },
+                    );
+                  },
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(
+                        IconData(0xe800, fontFamily: 'Curry'),
+                        color: Color.fromRGBO(105, 105, 105, 1),
+                        size: 50,
                       ),
+                      title: Text(
+                        item.getName,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      subtitle: Text('更新日: ${item.getLatestUpdateDate}'),
                     ),
                   ),
                 ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.red,
-                    icon: Icons.delete,
-                    onTap: () => _showDialog(i, item, context),
-                  ),
-                ],
-              );
-            },
-            itemCount: snapshot.data.length,
-          );
-        }
+              ),
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: 'Delete',
+                  color: Colors.red,
+                  icon: Icons.delete,
+                  onTap: () => _showDialog(i, item, context),
+                ),
+              ],
+            );
+          },
+          itemCount: filteredSnapshotData.length,
+        );
       },
     );
   }
